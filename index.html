@@ -766,11 +766,83 @@
   var STORAGE_KEY='ahd_phones_v2', CONTENT_KEY='ahd_content_v2', RATING_KEY='ahd_ratings_v1',
       LANG_KEY='ahd_lang', THEME_KEY='ahd_theme', PASS_KEY='ahd_admin_pass';
   var ADMIN_PASS='admin1234';
+  /* ===== GitHub sync config — แก้ 2 บรรทัดนี้เป็นของคุณ ===== */
+  var GH = {
+    owner:  'YOUR_GITHUB_USERNAME',
+    repo:   'YOUR_REPO_NAME',
+    branch: 'main',
+    path:   'data/store.json'
+  };
+  var TOKEN_KEY='ahd_gh_token';
+
+  function ghRawUrl(){ return 'https://raw.githubusercontent.com/'+GH.owner+'/'+GH.repo+'/'+GH.branch+'/'+GH.path+'?t='+Date.now(); }
+  function ghApiUrl(){ return 'https://api.github.com/repos/'+GH.owner+'/'+GH.repo+'/contents/'+GH.path; }
+  function getToken(){ try{ return sessionStorage.getItem(TOKEN_KEY)||''; }catch(e){ return ''; } }
+  function setToken(t){ try{ sessionStorage.setItem(TOKEN_KEY,t); }catch(e){} }
+
+  function loadFromGitHub(cb){
+    fetch(ghRawUrl()).then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(data){
+        if(data.phones) phones=data.phones;
+        if(data.content) CONTENT=data.content;
+        if(data.ratings) ratings=data.ratings;
+        cb(true);
+      })
+      .catch(function(){ cb(false); });
+  }
+
+  function saveToGitHub(){
+    var token=getToken();
+    if(!token){
+      token=window.prompt('วาง GitHub Personal Access Token (classic):');
+      if(!token){ toast('ยังไม่ได้ตั้งค่า token — บันทึกได้แค่ในเครื่องนี้'); return; }
+      setToken(token);
+    }
+    var payload=JSON.stringify({phones:phones, content:CONTENT, ratings:ratings},null,2);
+    var b64=btoa(unescape(encodeURIComponent(payload)));
+    fetch(ghApiUrl(),{headers:{'Authorization':'token '+token}})
+      .then(function(r){ return r.ok? r.json():{}; })
+      .then(function(existing){
+        return fetch(ghApiUrl(),{
+          method:'PUT',
+          headers:{'Authorization':'token '+token,'Content-Type':'application/json'},
+          body:JSON.stringify({message:'update shop data',content:b64,branch:GH.branch,sha:existing.sha})
+        });
+      })
+      .then(function(r){
+        if(r.ok){ toast('บันทึกขึ้น GitHub แล้ว — ทุกคนจะเห็นข้อมูลใหม่'); }
+        else { setToken(''); toast('บันทึกไม่สำเร็จ — token ผิดหรือไม่มีสิทธิ์'); }
+      })
+      .catch(function(){ toast('บันทึกไม่สำเร็จ (เครือข่ายมีปัญหา)'); });
+  }
+
+  /* ===== เปลี่ยน verifyPass ให้ใช้กล่องกรอกในหน้าเว็บแทน prompt() ===== */
+  function verifyPass(){
+    return new Promise(function(resolve){
+      var box=document.createElement('div');
+      box.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;';
+      box.innerHTML='<div style="background:var(--card);padding:24px;border-radius:14px;max-width:320px;width:90%;">'+
+        '<p style="margin-bottom:12px;font-weight:700;">ใส่รหัสผ่านแอดมิน</p>'+
+        '<input type="password" id="__pw" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-bottom:12px;">'+
+        '<div style="display:flex;gap:8px;"><button id="__pwOk" class="btn btn-red" style="flex:1;">ตกลง</button>'+
+        '<button id="__pwCancel" class="btn btn-ghost" style="flex:1;">ยกเลิก</button></div></div>';
+      document.body.appendChild(box);
+      document.getElementById('__pw').focus();
+      function close(v){ document.body.removeChild(box); resolve(v); }
+      document.getElementById('__pwOk').onclick=function(){
+        var v=document.getElementById('__pw').value;
+        if(v!==ADMIN_PASS){ toast(T('admin.wrong')); close(false); }
+        else close(true);
+      };
+      document.getElementById('__pwCancel').onclick=function(){ close(false); };
+    });
+  }
   var currentLang='th';
   try{ currentLang=localStorage.getItem(LANG_KEY)||'th'; }catch(e){}
 
   var CONTENT={};
-  try{ var saved=localStorage.getItem(CONTENT_KEY); if(saved) CONTENT=JSON.parse(saved); }catch(e){}
+try{ var saved=localStorage.getItem(CONTENT_KEY); if(saved) CONTENT=JSON.parse(saved); }catch(e){}
+// CONTENT ตอนนี้มีโครงสร้าง { th:{...}, en:{...}, ... }
 
   /* ---------- Toast ---------- */
   var toastEl=document.getElementById('toast'), toastTimer=null;
@@ -1148,7 +1220,7 @@
   });
 
   function T(key){
-    if(CONTENT[key]!=null) return CONTENT[key];
+    if(CONTENT[currentLang] && CONTENT[currentLang][key]!=null) return CONTENT[currentLang][key];
     var dict=I18N[currentLang]||{};
     if(dict[key]!=null) return dict[key];
     return baseContent[key]!=null?baseContent[key]:key;
@@ -1346,16 +1418,18 @@
 
   /* ===== Admin mode (add/delete products) ===== */
   var adminToggle=document.getElementById('adminToggle');
-  adminToggle.addEventListener('click',function(){
+    adminToggle.addEventListener('click',function(){
     var isAdmin=document.body.classList.contains('admin-mode');
     if(isAdmin){
       document.body.classList.remove('admin-mode');
       adminToggle.textContent=T('admin.toggle');
       return;
     }
-    if(!verifyPass()) return;
-    document.body.classList.add('admin-mode');
-    adminToggle.textContent=T('edit.on');
+    verifyPass().then(function(ok){
+      if(!ok) return;
+      document.body.classList.add('admin-mode');
+      adminToggle.textContent=T('edit.on');
+    });
   });
 
   var pImage=document.getElementById('pImage');
@@ -1440,10 +1514,11 @@
     editToggle.textContent=T('edit.toggle');
   }
 
-  document.getElementById('editSave').addEventListener('click',function(){
-    CONTENT=collectContent();
+    document.getElementById('editSave').addEventListener('click',function(){
+    CONTENT[currentLang]=collectContent();
     try{ localStorage.setItem(CONTENT_KEY,JSON.stringify(CONTENT)); toast(T('edit.saved')); }
     catch(e){ toast(T('edit.error')); }
+    saveToGitHub(); // เพิ่มบรรทัดนี้ (ดูข้อ 3)
     exitEditMode(false);
   });
 
@@ -1451,7 +1526,7 @@
     exitEditMode(true);
   });
 
-  applyLang(currentLang);
+    loadFromGitHub(function(){ applyLang(currentLang); });
 })();
 </script>
 
