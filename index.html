@@ -1,56 +1,85 @@
 <!DOCTYPE html>
-<html lang="th" dir="ltr">
+<html lang="th" dir="ltr" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>เอ ฮ่องแดง โทรศัพท์ | ซ่อม รับซื้อ ขาย ปลดล็อกโทรศัพท์มือถือ</title>
-<meta name="description" content="ร้านเอ ฮ่องแดง โทรศัพท์ บริการซ่อมโทรศัพท์ รับซื้อโทรศัพท์มือสอง ขายเครื่องมือสอง และปลดล็อกเครื่อง ราคาเป็นกันเอง ซ่อมไว" />
+<meta name="description" content="ร้านเอ ฮ่องแดง โทรศัพท์ บริการซ่อมโทรศัพท์ รับซื้อโทรศัพท์มือสอง ขายเครื่องมือสอง และปลดล็อกเครื่อง ราคาเป็นกันเอง ซ่อมไว รองรับ 9 ภาษา" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream:#FBF2E4;
-    --cream-dim:#F3E7D4;
+    --bg:#FBF2E4;
+    --bg-dim:#F3E7D4;
+    --card:#FFF9F0;
     --ink:#241A16;
+    --ink-soft:rgba(36,26,22,0.68);
     --red:#C6362B;
     --red-deep:#98241C;
     --gold:#EFA92E;
     --teal:#2E6E63;
-    --line: rgba(36,26,22,0.16);
-    --radius: 4px;
+    --line:rgba(36,26,22,0.14);
+    --glass:rgba(255,255,255,0.55);
+    --shadow:0 10px 30px rgba(36,26,22,0.10);
+    --shadow-lg:0 24px 60px rgba(36,26,22,0.16);
+    --radius:16px;
+  }
+  html[data-theme="dark"]{
+    --bg:#171110;
+    --bg-dim:#211815;
+    --card:#241B18;
+    --ink:#F6EDE2;
+    --ink-soft:rgba(246,237,226,0.66);
+    --line:rgba(246,237,226,0.14);
+    --glass:rgba(255,255,255,0.05);
+    --shadow:0 10px 30px rgba(0,0,0,0.45);
+    --shadow-lg:0 24px 60px rgba(0,0,0,0.55);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
   body{
     font-family:'Sarabun', sans-serif;
     color:var(--ink);
-    background:var(--cream);
+    background:var(--bg);
     line-height:1.65;
     font-size:16px;
+    transition:background .35s ease, color .35s ease;
   }
-  h1,h2,h3,.brand,.pill-num{
+  h1,h2,h3,.brand,.pill-num,.lang-select{
     font-family:'Bai Jamjuree', sans-serif;
   }
   a{color:inherit; text-decoration:none;}
   img,svg{display:block; max-width:100%;}
-  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
-  ::selection{background:var(--gold); color:var(--ink);}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 24px;}
+  ::selection{background:var(--gold); color:#241A16;}
 
-  /* Language switcher */
+  /* ===== Language switcher ===== */
   .lang-select{
-    padding:10px 12px; border:2px solid var(--ink); border-radius:999px;
-    background:var(--cream); font-family:inherit; font-weight:600; font-size:13.5px;
-    color:var(--ink); cursor:pointer; max-width:130px;
+    padding:9px 12px; border:2px solid var(--ink); border-radius:999px;
+    background:var(--bg); font-weight:600; font-size:13px;
+    color:var(--ink); cursor:pointer; max-width:150px;
   }
 
-  /* Admin edit mode */
+  /* ===== Toast ===== */
+  .toast{
+    position:fixed; left:50%; bottom:90px; transform:translateX(-50%) translateY(30px);
+    background:var(--ink); color:var(--bg); padding:13px 26px; border-radius:999px;
+    font-weight:600; font-size:14px; z-index:200; opacity:0; pointer-events:none;
+    transition:all .35s cubic-bezier(.2,.9,.3,1.2); box-shadow:var(--shadow-lg);
+    border-left:5px solid var(--gold); max-width:90vw; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+  /* ===== Edit mode ===== */
   body.edit-mode [data-i18n]{
     outline:2px dashed var(--gold); outline-offset:2px;
-    cursor:text; background:rgba(239,169,46,0.07); min-height:1em;
+    cursor:text; background:rgba(239,169,46,0.10); min-height:1em; border-radius:4px;
   }
+  body.edit-mode [data-i18n] a, body.edit-mode [data-i18n] button{pointer-events:none;}
+  body.edit-mode select[data-i18n], body.edit-mode option[data-i18n]{outline:none; cursor:default; background:transparent;}
   .edit-bar{
     display:none; position:fixed; bottom:0; left:0; right:0; z-index:99;
-    background:var(--ink); color:var(--cream); padding:12px 20px;
+    background:var(--ink); color:var(--bg); padding:12px 20px;
     align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
     box-shadow:0 -4px 20px rgba(0,0,0,0.35);
   }
@@ -60,13 +89,23 @@
     padding:9px 20px; border-radius:999px; border:none; cursor:pointer;
     font-family:inherit; font-weight:700; font-size:14px;
   }
-  #editSave{background:var(--gold); color:var(--ink);}
-  #editCancel{background:transparent; color:var(--cream); border:1px solid rgba(251,242,228,0.5) !important;}
-  body.edit-mode{padding-bottom:70px;}
+  #editSave{background:var(--gold); color:#241A16;}
+  #editCancel{background:transparent; color:var(--bg); border:1px solid rgba(251,242,228,0.5) !important;}
+  body.edit-mode{padding-bottom:76px;}
 
-  /* Marquee ticker */
+  /* ===== Back to top ===== */
+  #backTop{
+    position:fixed; right:22px; bottom:22px; width:48px; height:48px; border-radius:50%;
+    background:var(--red); color:#FBF2E4; border:none; cursor:pointer; z-index:90;
+    display:flex; align-items:center; justify-content:center; font-size:20px;
+    opacity:0; pointer-events:none; transition:all .3s ease; box-shadow:var(--shadow-lg);
+  }
+  #backTop.show{opacity:1; pointer-events:auto;}
+  #backTop:hover{background:var(--red-deep); transform:translateY(-3px);}
+
+  /* ===== Ticker ===== */
   .ticker{
-    background:var(--ink); color:var(--cream); overflow:hidden;
+    background:var(--ink); color:var(--bg); overflow:hidden;
     white-space:nowrap; border-bottom:3px solid var(--gold);
   }
   .ticker-track{
@@ -76,190 +115,242 @@
   .ticker-track span{display:inline-flex; align-items:center; gap:36px; white-space:nowrap;}
   .ticker-track b{color:var(--gold); font-weight:600;}
   @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
-  [dir="rtl"] .ticker-track{animation-name:scroll-rtl;}
-  @keyframes scroll-rtl{ from{transform:translateX(0);} to{transform:translateX(50%);} }
-  @media (prefers-reduced-motion: reduce){ .ticker-track{animation:none;} }
+  @media (prefers-reduced-motion: reduce){ .ticker-track,.strip-track{animation:none;} }
 
-  /* Header */
+  /* ===== Header ===== */
   header{
     position:sticky; top:0; z-index:50;
-    background:var(--cream); border-bottom:1px solid var(--line);
+    background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
   }
-  .nav{display:flex; align-items:center; justify-content:space-between; height:78px; gap:12px;}
-  .brand{font-size:21px; font-weight:700; display:flex; align-items:center; gap:10px;}
+  .nav{display:flex; align-items:center; justify-content:space-between; height:76px; gap:12px;}
+  .brand{font-size:20px; font-weight:700; display:flex; align-items:center; gap:10px;}
   .brand .mark{
-    width:34px; height:34px; border-radius:50%; background:var(--red); color:var(--cream);
-    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;
-    flex:none;
+    width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,var(--red),var(--red-deep)); color:#FBF2E4;
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; flex:none;
+    box-shadow:0 6px 14px rgba(198,54,43,0.35);
   }
   .brand small{display:block; font-size:11px; font-weight:500; color:var(--teal); font-family:'Sarabun',sans-serif;}
-  .nav-links{display:flex; gap:30px; font-weight:600; font-size:15px;}
-  .nav-links a:hover{color:var(--red);}
-  .nav-actions{display:flex; gap:10px; align-items:center;}
-  .btn{
-    display:inline-flex; align-items:center; gap:8px; padding:12px 22px;
-    font-weight:700; font-size:14.5px; border-radius:999px; border:2px solid transparent;
-    white-space:nowrap; cursor:pointer;
+  .nav-links{display:flex; gap:26px; font-weight:600; font-size:14.5px;}
+  .nav-links a{position:relative; padding:4px 0;}
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:2px;
+    background:var(--red); transition:width .25s ease;
   }
-  .btn-red{background:var(--red); color:var(--cream); border-color:var(--red);}
-  .btn-red:hover{background:var(--red-deep); border-color:var(--red-deep);}
+  .nav-links a:hover{color:var(--red);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-actions{display:flex; gap:9px; align-items:center;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:11px 20px;
+    font-weight:700; font-size:14px; border-radius:999px; border:2px solid transparent;
+    white-space:nowrap; cursor:pointer; transition:all .22s ease;
+  }
+  .btn-red{background:var(--red); color:#FBF2E4; border-color:var(--red);}
+  .btn-red:hover{background:var(--red-deep); border-color:var(--red-deep); transform:translateY(-2px); box-shadow:0 8px 18px rgba(198,54,43,0.35);}
   .btn-ghost{border-color:var(--ink); color:var(--ink);}
-  .btn-ghost:hover{background:var(--ink); color:var(--cream);}
+  .btn-ghost:hover{background:var(--ink); color:var(--bg); transform:translateY(-2px);}
   .btn-line{background:#06C755; color:#fff; border-color:#06C755;}
+  .btn-line:hover{background:#05a848; transform:translateY(-2px); box-shadow:0 8px 18px rgba(6,199,85,0.35);}
+  .icon-btn{
+    width:42px; height:42px; border-radius:50%; border:2px solid var(--ink);
+    background:transparent; color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; transition:all .22s ease; flex:none;
+  }
+  .icon-btn:hover{background:var(--ink); color:var(--bg); transform:rotate(15deg);}
   .burger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
-  .burger span{width:26px; height:2px; background:var(--ink);}
+  .burger span{width:26px; height:2px; background:var(--ink); transition:all .25s ease;}
 
-  /* Hero */
+  /* ===== Hero ===== */
   .hero{position:relative; overflow:hidden;}
+  .hero::before,.hero::after{
+    content:""; position:absolute; border-radius:50%; filter:blur(90px); opacity:.5; z-index:0;
+  }
+  .hero::before{width:480px; height:480px; background:radial-gradient(circle,var(--gold),transparent 70%); top:-160px; right:-120px;}
+  .hero::after{width:420px; height:420px; background:radial-gradient(circle,var(--teal),transparent 70%); bottom:-180px; left:-140px;}
   .hero-inner{
     display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;
-    align-items:center; padding:64px 0 56px;
+    align-items:center; padding:70px 0 60px; position:relative; z-index:1;
   }
   .sign{
-    background:var(--red); color:var(--cream); border-radius:18px;
-    padding:44px 40px; position:relative; box-shadow:0 14px 0 var(--red-deep);
+    background:linear-gradient(150deg,var(--red) 0%,var(--red-deep) 100%); color:#FBF2E4;
+    border-radius:24px; padding:46px 42px; position:relative;
+    box-shadow:0 18px 0 -6px var(--red-deep), var(--shadow-lg);
   }
   .sign::before{
     content:"เปิดร้าน 09:00–20:00 ทุกวัน"; position:absolute; top:-14px; left:32px;
-    background:var(--gold); color:var(--ink); font-weight:700; font-size:12.5px;
-    padding:6px 14px; border-radius:999px;
+    background:var(--gold); color:#241A16; font-weight:700; font-size:12.5px;
+    padding:6px 16px; border-radius:999px; box-shadow:0 4px 10px rgba(0,0,0,0.2);
   }
-  .sign h1{font-size:38px; line-height:1.32; font-weight:700; max-width:520px;}
-  .sign p.lead{margin-top:18px; font-size:16px; color:rgba(251,242,228,0.88); max-width:460px;}
+  .sign h1{font-size:37px; line-height:1.32; font-weight:700; max-width:520px;}
+  .sign p.lead{margin-top:18px; font-size:16px; color:rgba(251,242,228,0.88); max-width:470px;}
   .hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
-  .sign .btn-ghost{border-color:rgba(251,242,228,0.5); color:var(--cream);}
-  .sign .btn-ghost:hover{background:var(--cream); color:var(--red); border-color:var(--cream);}
+  .sign .btn-ghost{border-color:rgba(251,242,228,0.5); color:#FBF2E4;}
+  .sign .btn-ghost:hover{background:#FBF2E4; color:var(--red); border-color:#FBF2E4;}
 
   .phone-art{position:relative; display:flex; justify-content:center;}
   .phone-shell{
-    width:210px; height:420px; border-radius:30px; background:var(--ink); position:relative;
-    box-shadow:0 20px 0 rgba(36,26,22,0.14);
+    width:210px; height:420px; border-radius:32px; background:#1c1411; position:relative;
+    box-shadow:0 24px 0 rgba(36,26,22,0.12), var(--shadow-lg);
+    animation:float 5s ease-in-out infinite;
   }
+  html[data-theme="dark"] .phone-shell{box-shadow:0 24px 0 rgba(0,0,0,0.4), var(--shadow-lg);}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
   .phone-shell::before{
-    content:""; position:absolute; inset:12px; border-radius:20px;
-    background:linear-gradient(160deg, var(--teal), #1c443d);
+    content:""; position:absolute; inset:12px; border-radius:22px;
+    background:linear-gradient(160deg, var(--teal), #16352f);
   }
-  .phone-shell .notch{position:absolute; top:24px; left:50%; transform:translateX(-50%); width:56px; height:8px; border-radius:6px; background:var(--ink); z-index:2;}
+  .phone-shell .notch{position:absolute; top:24px; left:50%; transform:translateX(-50%); width:56px; height:8px; border-radius:6px; background:#1c1411; z-index:2;}
   .crack{position:absolute; top:40%; left:24%; width:52%; height:2px; background:var(--gold); transform:rotate(20deg); z-index:2;}
   .crack::before{content:""; position:absolute; left:20%; top:-16px; width:2px; height:32px; background:var(--gold); transform:rotate(-32deg);}
   .crack::after{content:""; position:absolute; left:60%; top:-12px; width:2px; height:24px; background:var(--gold); transform:rotate(42deg);}
-  .wrench{position:absolute; bottom:-14px; right:-6px; width:70px; height:70px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 0 #c98d1f;}
+  .wrench{position:absolute; bottom:-14px; right:-6px; width:70px; height:70px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 0 #c98d1f; animation:spin-slow 9s linear infinite;}
+  @keyframes spin-slow{from{transform:rotate(0);}to{transform:rotate(360deg);}}
 
-  .hero-stats{display:flex; gap:0; margin-top:30px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:0;}
-  .hero-stats div{padding:18px 26px 0 0; border-right:1px solid var(--line); margin-right:26px;}
-  .hero-stats div:last-child{border-right:none;}
-  .hero-stats b{display:block; font-size:26px; font-family:'Bai Jamjuree',sans-serif; color:var(--red);}
-  .hero-stats span{font-size:13px; color:rgba(36,26,22,0.65);}
+  .hero-stats{display:flex; margin-top:34px; flex-wrap:wrap;}
+  .hero-stats div{padding:16px 28px 0 0; margin-right:28px; border-right:1px solid var(--line);}
+  .hero-stats div:last-child{border-right:none; margin-right:0;}
+  .hero-stats b{display:block; font-size:24px; font-family:'Bai Jamjuree',sans-serif; color:var(--red);}
+  .hero-stats span{font-size:13px; color:var(--ink-soft);}
 
-  /* Section shell */
+  /* ===== Sections ===== */
   section{padding:78px 0;}
-  .section-head{max-width:600px; margin-bottom:44px;}
-  .eyebrow{color:var(--red); font-weight:700; font-size:14px; margin-bottom:8px;}
+  .section-head{max-width:620px; margin-bottom:44px;}
+  .eyebrow{color:var(--red); font-weight:700; font-size:14px; margin-bottom:8px; letter-spacing:.5px; text-transform:uppercase;}
   .section-head h2{font-size:29px; font-weight:700;}
-  .section-head p{margin-top:12px; color:rgba(36,26,22,0.7); font-size:15.5px;}
+  .section-head p{margin-top:12px; color:var(--ink-soft); font-size:15.5px;}
 
-  /* Services */
+  /* Reveal animation */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  /* ===== Services ===== */
   .service-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
   .service-card{
-    background:var(--cream-dim); border:1px solid var(--line); border-radius:14px;
-    padding:26px 22px; position:relative;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:28px 24px; position:relative; transition:all .3s ease; box-shadow:var(--shadow);
   }
-  .service-card.featured{background:var(--red); color:var(--cream); border-color:var(--red);}
+  .service-card:hover{transform:translateY(-8px); box-shadow:var(--shadow-lg);}
+  .service-card.featured{background:linear-gradient(160deg,var(--red),var(--red-deep)); color:#FBF2E4; border-color:transparent;}
   .service-card .badge{
-    position:absolute; top:-11px; right:16px; background:var(--gold); color:var(--ink);
-    font-size:11.5px; font-weight:700; padding:4px 11px; border-radius:999px;
+    position:absolute; top:-11px; right:16px; background:var(--gold); color:#241A16;
+    font-size:11.5px; font-weight:700; padding:4px 12px; border-radius:999px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
   }
   .service-card .icon{
-    width:44px; height:44px; border-radius:10px; background:var(--ink); color:var(--cream);
-    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+    width:46px; height:46px; border-radius:12px; background:var(--ink); color:var(--bg);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px; transition:transform .3s ease;
   }
-  .service-card.featured .icon{background:var(--gold); color:var(--ink);}
+  .service-card:hover .icon{transform:scale(1.1) rotate(-6deg);}
+  .service-card.featured .icon{background:var(--gold); color:#241A16;}
   .service-card h3{font-size:18px; font-weight:700; margin-bottom:6px;}
   .service-card p{font-size:14px; opacity:0.82; margin-bottom:14px;}
   .service-card ul{list-style:none; font-size:13.5px; display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
   .service-card ul li::before{content:"✓ "; font-weight:700; color:var(--teal);}
   .service-card.featured ul li::before{color:var(--gold);}
   .service-card a{font-weight:700; font-size:14px; color:var(--red);}
-  .service-card.featured a{color:var(--cream); text-decoration:underline;}
+  .service-card.featured a{color:#FBF2E4; text-decoration:underline;}
 
-  /* Shop */
-  .shop-topbar{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:26px;}
+  /* ===== Shop ===== */
+  .shop-topbar{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:22px;}
   .admin-toggle-btn{font-size:13px; padding:10px 18px;}
-  .admin-form{display:none; background:var(--cream-dim); border:1px dashed var(--line); border-radius:12px; padding:24px; margin-bottom:28px;}
+  .admin-form{display:none; background:var(--card); border:1px dashed var(--line); border-radius:var(--radius); padding:26px; margin-bottom:28px; box-shadow:var(--shadow);}
   body.admin-mode .admin-form{display:block;}
   .admin-form h3{font-size:16px; font-weight:700; margin-bottom:14px;}
   .admin-form-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:16px;}
   .admin-form label{display:flex; flex-direction:column; gap:6px; font-size:13.5px; font-weight:600;}
-  .admin-form input{padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14px; background:var(--cream); color:var(--ink);}
-  #pImgPreview img{width:76px; height:76px; object-fit:cover; border-radius:8px; margin-top:4px; border:1px solid var(--line);}
-  .admin-note{font-size:12.5px; color:rgba(36,26,22,0.6); margin-top:-6px; margin-bottom:16px;}
+  .admin-form input{padding:11px 13px; border:1px solid var(--line); border-radius:10px; font-family:inherit; font-size:14px; background:var(--bg); color:var(--ink);}
+  #pImgPreview img{width:76px; height:76px; object-fit:cover; border-radius:10px; margin-top:4px; border:1px solid var(--line);}
+  .admin-note{font-size:12.5px; color:var(--ink-soft); margin-top:-6px; margin-bottom:16px;}
+
+  .shop-tools{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;}
+  .shop-tools input,.shop-tools select{
+    padding:11px 16px; border:1px solid var(--line); border-radius:999px; font-family:inherit;
+    font-size:14px; background:var(--card); color:var(--ink); outline:none; transition:border .2s ease;
+  }
+  .shop-tools input:focus,.shop-tools select:focus{border-color:var(--red);}
+  .shop-tools input{flex:1; min-width:200px;}
 
   .phone-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:48px;}
-  .phone-card{background:var(--cream-dim); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
-  .phone-card-img{aspect-ratio:1/1; background:var(--cream); display:flex; align-items:center; justify-content:center; overflow:hidden;}
-  .phone-card-img img{width:100%; height:100%; object-fit:cover;}
+  .phone-card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; display:flex; flex-direction:column; transition:all .3s ease; box-shadow:var(--shadow);
+  }
+  .phone-card:hover{transform:translateY(-8px); box-shadow:var(--shadow-lg);}
+  .phone-card-img{aspect-ratio:1/1; background:var(--bg-dim); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .phone-card-img img{width:100%; height:100%; object-fit:cover; transition:transform .4s ease;}
+  .phone-card:hover .phone-card-img img{transform:scale(1.07);}
   .phone-card-body{padding:16px; display:flex; flex-direction:column; gap:8px; flex:1;}
   .phone-card h3{font-size:15.5px; font-weight:700;}
-  .phone-card .desc{font-size:13px; color:rgba(36,26,22,0.65); flex:1;}
+  .phone-card .desc{font-size:13px; color:var(--ink-soft); flex:1;}
   .phone-card .price{font-family:'Bai Jamjuree',sans-serif; font-size:19px; font-weight:700; color:var(--red);}
   .star-rate{display:flex; gap:2px;}
-  .star-rate span{font-size:17px; color:rgba(36,26,22,0.25); cursor:pointer;}
+  .star-rate span{font-size:18px; color:rgba(128,128,128,0.4); cursor:pointer; transition:transform .15s ease;}
+  .star-rate span:hover{transform:scale(1.25);}
   .star-rate span.filled{color:var(--gold);}
   .phone-card-actions{display:flex; flex-direction:column; gap:8px; margin-top:6px;}
   .btn-sm{padding:9px 14px; font-size:13px; width:100%; justify-content:center;}
   .btn-admin-del{display:none; background:none; border:1px solid var(--red); color:var(--red); border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer; width:100%; justify-content:center;}
   body.admin-mode .btn-admin-del{display:inline-flex;}
+  .shop-empty{display:none; text-align:center; padding:40px 0; color:var(--ink-soft); font-size:15px; grid-column:1/-1;}
 
-  .calc-card{background:var(--ink); color:var(--cream); border-radius:18px; padding:36px;}
+  .calc-card{background:linear-gradient(150deg,#2b1f1a,#1c1411); color:#FBF2E4; border-radius:22px; padding:38px; box-shadow:var(--shadow-lg); position:relative; overflow:hidden;}
+  .calc-card::before{content:""; position:absolute; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle,rgba(239,169,46,0.22),transparent 70%); top:-140px; right:-100px;}
   .calc-card h3{font-size:21px; font-weight:700; margin-bottom:8px;}
-  .calc-sub{font-size:14px; color:rgba(251,242,228,0.72); margin-bottom:22px; max-width:520px;}
+  .calc-sub{font-size:14px; color:rgba(251,242,228,0.72); margin-bottom:22px; max-width:540px;}
   .calc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px;}
   .calc-grid label{display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:600;}
-  .calc-grid input, .calc-grid select{padding:10px 12px; border-radius:8px; border:1px solid rgba(251,242,228,0.3); background:rgba(251,242,228,0.08); color:var(--cream); font-family:inherit; font-size:14px;}
+  .calc-grid input, .calc-grid select{padding:11px 13px; border-radius:10px; border:1px solid rgba(251,242,228,0.3); background:rgba(251,242,228,0.08); color:#FBF2E4; font-family:inherit; font-size:14px; outline:none;}
+  .calc-grid input:focus,.calc-grid select:focus{border-color:var(--gold);}
   .calc-grid input[readonly]{opacity:0.75;}
-  .calc-grid option{color:var(--ink);}
-  .calc-result{margin-top:22px; background:rgba(251,242,228,0.08); border-radius:12px; padding:22px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 24px;}
+  .calc-grid option{color:#241A16;}
+  .calc-result{margin-top:22px; background:rgba(251,242,228,0.08); border-radius:14px; padding:22px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 24px; position:relative; z-index:1;}
   .calc-result .row{display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid rgba(251,242,228,0.14); padding-bottom:8px; font-size:14.5px;}
   .calc-result .row b{color:var(--gold); white-space:nowrap;}
   .calc-result .row.total{grid-column:1/-1; font-size:17px; font-weight:700; border-bottom:none; padding-top:6px;}
-  .calc-note{margin-top:16px; font-size:12.5px; color:rgba(251,242,228,0.55);}
+  .calc-note{margin-top:16px; font-size:12.5px; color:rgba(251,242,228,0.55); position:relative; z-index:1;}
 
-  /* Why us */
-  .why{background:var(--ink); color:var(--cream);}
-  .why .section-head h2{color:var(--cream);}
+  /* ===== Why us ===== */
+  .why{background:linear-gradient(160deg,#2b1f1a,#1c1411); color:#FBF2E4; position:relative; overflow:hidden;}
+  .why::before{content:""; position:absolute; width:520px; height:520px; border-radius:50%; background:radial-gradient(circle,rgba(46,110,99,0.3),transparent 70%); bottom:-260px; right:-160px;}
+  .why .section-head{position:relative; z-index:1;}
+  .why .section-head h2{color:#FBF2E4;}
   .why .eyebrow{color:var(--gold);}
   .why .section-head p{color:rgba(251,242,228,0.72);}
-  .why-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-  .why-item{border:1px solid rgba(251,242,228,0.16); border-radius:12px; padding:26px;}
+  .why-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; position:relative; z-index:1;}
+  .why-item{border:1px solid rgba(251,242,228,0.16); border-radius:var(--radius); padding:26px; background:rgba(251,242,228,0.04); backdrop-filter:blur(6px); transition:all .3s ease;}
+  .why-item:hover{border-color:var(--gold); transform:translateY(-6px); background:rgba(251,242,228,0.07);}
   .why-item .num{font-family:'Bai Jamjuree',sans-serif; font-size:13px; color:var(--gold); font-weight:700; margin-bottom:12px;}
   .why-item h3{font-size:17px; font-weight:600; margin-bottom:8px;}
   .why-item p{font-size:14px; color:rgba(251,242,228,0.68);}
 
-  /* Process */
+  /* ===== Process ===== */
   .process-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line);}
-  .process-step{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:30px 26px;}
+  .process-step{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:32px 28px; transition:background .3s ease;}
+  .process-step:hover{background:var(--card);}
   .process-step .pill-num{
-    display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;
-    border-radius:50%; background:var(--red); color:var(--cream); font-weight:700; font-size:15px; margin-bottom:16px;
+    display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px;
+    border-radius:12px; background:var(--red); color:#FBF2E4; font-weight:700; font-size:15px; margin-bottom:16px;
+    box-shadow:0 6px 14px rgba(198,54,43,0.3);
   }
   .process-step h3{font-size:17px; font-weight:600; margin-bottom:6px;}
-  .process-step p{font-size:14.5px; color:rgba(36,26,22,0.68);}
+  .process-step p{font-size:14.5px; color:var(--ink-soft);}
 
-  /* Strip */
+  /* ===== Strip ===== */
   .strip{background:var(--gold); overflow:hidden; padding:16px 0;}
   .strip-track{display:inline-flex; gap:26px; animation:scroll 40s linear infinite; white-space:nowrap;}
-  .strip-track span{white-space:nowrap; font-family:'Bai Jamjuree',sans-serif; font-weight:600; font-size:15px; color:var(--ink);}
+  .strip-track span{white-space:nowrap; font-family:'Bai Jamjuree',sans-serif; font-weight:600; font-size:15px; color:#241A16;}
 
-  .reviews{background:var(--cream-dim);}
+  .reviews{background:var(--bg-dim);}
   .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-  .review-card{background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:22px;}
+  .review-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; transition:all .3s ease; box-shadow:var(--shadow);}
+  .review-card:hover{transform:translateY(-6px); box-shadow:var(--shadow-lg);}
   .review-card .stars{color:var(--gold); font-size:14px; margin-bottom:10px;}
-  .review-card p{font-size:14.5px; color:rgba(36,26,22,0.78);}
+  .review-card p{font-size:14.5px; color:var(--ink-soft);}
   .review-card .who{margin-top:14px; font-size:13px; font-weight:700; color:var(--teal);}
 
-  /* FAQ */
+  /* ===== FAQ ===== */
   .faq{max-width:760px;}
-  .faq details{border-bottom:1px solid var(--line); padding:18px 0;}
+  .faq details{border-bottom:1px solid var(--line); padding:18px 0; transition:background .2s ease;}
   .faq summary{
     cursor:pointer; font-weight:700; font-size:16px; list-style:none;
     display:flex; justify-content:space-between; align-items:center; gap:16px;
@@ -267,37 +358,40 @@
   .faq summary::-webkit-details-marker{display:none;}
   .faq summary::after{content:"+"; font-size:22px; color:var(--red); transition:transform 0.2s;}
   .faq details[open] summary::after{content:"–";}
-  .faq details p{margin-top:12px; font-size:14.5px; color:rgba(36,26,22,0.72); max-width:640px;}
+  .faq details p{margin-top:12px; font-size:14.5px; color:var(--ink-soft); max-width:640px;}
 
-  /* Contact */
-  .contact{background:var(--ink); color:var(--cream);}
-  .contact .section-head h2{color:var(--cream);}
+  /* ===== Contact ===== */
+  .contact{background:linear-gradient(160deg,#2b1f1a,#1c1411); color:#FBF2E4; position:relative; overflow:hidden;}
+  .contact::before{content:""; position:absolute; width:460px; height:460px; border-radius:50%; background:radial-gradient(circle,rgba(198,54,43,0.25),transparent 70%); top:-200px; left:-140px;}
+  .contact .section-head{position:relative; z-index:1;}
+  .contact .section-head h2{color:#FBF2E4;}
   .contact .eyebrow{color:var(--gold);}
-  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:52px;}
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:52px; position:relative; z-index:1;}
   .info-row{display:flex; gap:16px; padding:16px 0; border-bottom:1px solid rgba(251,242,228,0.14);}
   .info-row b{display:block; font-size:14px; color:var(--gold); margin-bottom:4px; font-weight:600;}
   .info-row p{font-size:15px; color:rgba(251,242,228,0.85);}
   .hours-table{width:100%; border-collapse:collapse; font-size:14.5px;}
-  .hours-table td{padding:9px 0; border-bottom:1px solid rgba(251,242,228,0.12);}
+  .hours-table td{padding:10px 0; border-bottom:1px solid rgba(251,242,228,0.12);}
   .hours-table td:last-child{text-align:right; color:rgba(251,242,228,0.75);}
   .contact-cta{margin-top:26px; display:flex; gap:12px; flex-wrap:wrap;}
 
-  /* CTA banner */
+  /* ===== CTA banner ===== */
   .cta-banner{
-    background:var(--red); color:var(--cream); border-radius:18px; margin:0 auto;
-    max-width:1052px; padding:44px 40px; display:flex; align-items:center; justify-content:space-between;
-    gap:24px; flex-wrap:wrap; box-shadow:0 12px 0 var(--red-deep);
+    background:linear-gradient(150deg,var(--red),var(--red-deep)); color:#FBF2E4; border-radius:22px; margin:0 auto;
+    max-width:1072px; padding:46px 42px; display:flex; align-items:center; justify-content:space-between;
+    gap:24px; flex-wrap:wrap; box-shadow:0 14px 0 -4px var(--red-deep), var(--shadow-lg);
   }
-  .cta-banner h2{font-size:25px; font-weight:700; max-width:420px;}
-  .cta-banner .btn-ghost{border-color:rgba(251,242,228,0.5); color:var(--cream);}
+  .cta-banner h2{font-size:25px; font-weight:700; max-width:430px;}
+  .cta-banner .btn-ghost{border-color:rgba(251,242,228,0.5); color:#FBF2E4;}
+  .cta-banner .btn-ghost:hover{background:#FBF2E4; color:var(--red); border-color:#FBF2E4;}
 
-  footer{background:var(--ink); border-top:1px solid rgba(251,242,228,0.14); padding:26px 0;}
+  footer{background:#1c1411; border-top:1px solid rgba(251,242,228,0.14); padding:26px 0;}
   .footer-inner{display:flex; justify-content:space-between; align-items:center; color:rgba(251,242,228,0.55); font-size:13px; flex-wrap:wrap; gap:10px;}
 
   @media (max-width:900px){
     .nav-links{display:none;}
     .burger{display:flex;}
-    .hero-inner{grid-template-columns:1fr; padding:44px 0 40px;}
+    .hero-inner{grid-template-columns:1fr; padding:48px 0 44px;}
     .phone-art{order:-1; margin-bottom:8px;}
     .phone-shell{width:150px; height:300px;}
     .sign h1{font-size:29px;}
@@ -316,10 +410,14 @@
     .service-grid{grid-template-columns:1fr;}
     .phone-grid{grid-template-columns:1fr;}
     .calc-grid{grid-template-columns:1fr;}
+    .lang-select{max-width:105px;}
   }
 </style>
+<base target="_blank">
 </head>
 <body>
+
+<div class="toast" id="toast"></div>
 
 <div class="ticker">
   <div class="wrap" style="padding:0;">
@@ -348,7 +446,15 @@
       <select id="langSelect" class="lang-select" aria-label="ภาษา / Language">
         <option value="th">ไทย</option>
         <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="ru">Русский</option>
+        <option value="my">မြန်မာ</option>
+        <option value="km">ខ្មែរ</option>
+        <option value="zh">中文</option>
+        <option value="ko">한국어</option>
+        <option value="ja">日本語</option>
       </select>
+      <button id="themeToggle" class="icon-btn" type="button" title="Theme" aria-label="Theme">🌙</button>
       <a href="#" class="btn btn-line" data-i18n="nav.line">แชท LINE</a>
       <a href="tel:0800000000" class="btn btn-red" data-i18n="nav.call">โทร 080-000-0000</a>
     </div>
@@ -364,7 +470,7 @@
         <p class="lead" data-i18n="hero.lead">ซ่อมโทรศัพท์ทุกรุ่น รับซื้อเครื่องเก่าราคาสูง ขายเครื่องมือสองสภาพดี และปลดล็อกเครื่องที่ติดล็อก ตรวจเช็กและแจ้งราคาก่อนทุกครั้ง ไม่มีบวกเพิ่มทีหลัง</p>
         <div class="hero-actions">
           <a href="tel:0800000000" class="btn btn-ghost" data-i18n="hero.btnCall">โทรสอบถามเลย</a>
-          <a href="#services" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="hero.btnServices">ดูบริการทั้งหมด</a>
+          <a href="#services" class="btn" style="background:var(--gold); color:#241A16;" data-i18n="hero.btnServices">ดูบริการทั้งหมด</a>
         </div>
       </div>
       <div class="hero-stats">
@@ -387,13 +493,13 @@
 
 <section class="services" id="services">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="svc.eyebrow">บริการของร้าน</div>
       <h2 data-i18n="svc.title">ครบทุกเรื่องมือถือ ไม่ต้องวิ่งหลายที่</h2>
       <p data-i18n="svc.sub">เลือกใช้บริการได้ตามที่ต้องการ ทุกบริการตรวจเช็กและแจ้งราคาให้ทราบก่อนเริ่มงานเสมอ</p>
     </div>
     <div class="service-grid">
-      <div class="service-card featured">
+      <div class="service-card featured reveal">
         <div class="badge" data-i18n="svc1.badge">ยอดนิยม</div>
         <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 0-5.4 4.6l-6 6 2.8 2.8 6-6a4 4 0 0 0 4.6-5.4l-2.3 2.3-2-2 2.3-2.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
         <h3 data-i18n="svc1.name">ซ่อมโทรศัพท์</h3>
@@ -405,7 +511,7 @@
         </ul>
         <a href="tel:0800000000" data-i18n="svc1.link">โทรนัดคิวซ่อม →</a>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 17V7a2 2 0 0 1 2-2h8l6 6v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.6"/></svg></div>
         <h3 data-i18n="svc2.name">รับซื้อโทรศัพท์มือสอง</h3>
         <p data-i18n="svc2.desc">รับซื้อทุกสภาพ ทั้งเครื่องสวยและเครื่องมีปัญหา จ่ายเงินสดทันทีหน้าร้าน</p>
@@ -416,7 +522,7 @@
         </ul>
         <a href="tel:0800000000" data-i18n="svc2.link">ประเมินราคาเครื่อง →</a>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 19h6" stroke="currentColor" stroke-width="1.6"/></svg></div>
         <h3 data-i18n="svc3.name">ขายเครื่องมือสอง</h3>
         <p data-i18n="svc3.desc">คัดเครื่องมือสองผ่านการตรวจเช็กแล้ว พร้อมสายชาร์จ เคส ฟิล์มกันรอย และอุปกรณ์เสริม</p>
@@ -426,7 +532,7 @@
         </ul>
         <a href="tel:0800000000" data-i18n="svc3.link">ดูเครื่องพร้อมขาย →</a>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg></div>
         <h3 data-i18n="svc4.name">ปลดล็อก / เคลียร์เครื่อง</h3>
         <p data-i18n="svc4.desc">ลืมรหัสผ่าน ติดบัญชี iCloud หรือ Google ปลดล็อกซิม เคลียร์เครื่องก่อนขายต่อ</p>
@@ -477,7 +583,17 @@
       </div>
     </div>
 
+    <div class="shop-tools">
+      <input type="search" id="shopSearch" data-i18n-ph="shop.search" placeholder="🔍 ค้นหารุ่นเครื่อง...">
+      <select id="shopSort">
+        <option value="default" data-i18n="sort.new">เรียง: ล่าสุด</option>
+        <option value="low" data-i18n="sort.low">ราคา: ต่ำ → สูง</option>
+        <option value="high" data-i18n="sort.high">ราคา: สูง → ต่ำ</option>
+      </select>
+    </div>
+
     <div id="phoneGrid" class="phone-grid"></div>
+    <div id="shopEmpty" class="shop-empty" data-i18n="shop.empty">ไม่พบสินค้าที่ค้นหา</div>
 
     <div class="calc-card" id="calc">
       <h3 data-i18n="calc.title">คำนวณค่าผ่อนก่อนตัดสินใจ</h3>
@@ -502,7 +618,7 @@
           </select>
         </label>
       </div>
-      <button id="calcBtn" type="button" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="calc.btn">คำนวณยอดผ่อน</button>
+      <button id="calcBtn" type="button" class="btn" style="background:var(--gold); color:#241A16;" data-i18n="calc.btn">คำนวณยอดผ่อน</button>
       <div id="calcResult" class="calc-result" hidden></div>
       <p class="calc-note" data-i18n="calc.note">*เป็นการประมาณการเบื้องต้นเพื่อให้ลูกค้าตัดสินใจเท่านั้น ยอดจริงขึ้นอยู่กับการตรวจสอบสภาพเครื่องและเงื่อนไขของร้าน ณ วันที่ทำรายการ</p>
     </div>
@@ -520,57 +636,57 @@
 
 <section class="why" id="why">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="why.eyebrow">ทำไมต้องร้านเรา</div>
       <h2 data-i18n="why.title">ซ่อมตรงจุด ซื้อขายตรงไปตรงมา</h2>
       <p data-i18n="why.sub">ไม่ใช่แค่ซ่อมเครื่อง — เราอยากให้ลูกค้ารู้สึกว่าเดินเข้าร้านแล้วสบายใจ ราคาชัดเจน ไม่มีเซอร์ไพรส์</p>
     </div>
     <div class="why-grid">
-      <div class="why-item"><div class="num">01</div><h3 data-i18n="why1.t">แจ้งราคาก่อนซ่อม</h3><p data-i18n="why1.p">ตรวจเครื่องและแจ้งราคาให้ทราบก่อนเริ่มงานทุกครั้ง ไม่มีบวกเพิ่มทีหลัง</p></div>
-      <div class="why-item"><div class="num">02</div><h3 data-i18n="why2.t">อะไหล่คุณภาพ</h3><p data-i18n="why2.p">เลือกใช้อะไหล่คุณภาพดี พร้อมรับประกันงานซ่อมทุกชิ้นงาน</p></div>
-      <div class="why-item"><div class="num">03</div><h3 data-i18n="why3.t">ซ่อมไว รอรับได้</h3><p data-i18n="why3.p">งานซ่อมทั่วไปเสร็จภายในวันเดียว บางเคสรอรับได้เลยหน้าร้าน</p></div>
-      <div class="why-item"><div class="num">04</div><h3 data-i18n="why4.t">รับซื้อราคาสูง</h3><p data-i18n="why4.p">ประเมินราคาตามสภาพเครื่องจริง จ่ายเงินสดทันทีไม่ต้องรอ</p></div>
-      <div class="why-item"><div class="num">05</div><h3 data-i18n="why5.t">ปลดล็อกได้จริง</h3><p data-i18n="why5.p">เคสลืมรหัส ติดบัญชี หรือติดซิม เรามีวิธีจัดการให้ตรงจุด</p></div>
-      <div class="why-item"><div class="num">06</div><h3 data-i18n="why6.t">คุยง่าย ราคากันเอง</h3><p data-i18n="why6.p">อยู่ในพื้นที่มานาน ลูกค้าประจำบอกต่อกันปากต่อปาก</p></div>
+      <div class="why-item reveal"><div class="num">01</div><h3 data-i18n="why1.t">แจ้งราคาก่อนซ่อม</h3><p data-i18n="why1.p">ตรวจเครื่องและแจ้งราคาให้ทราบก่อนเริ่มงานทุกครั้ง ไม่มีบวกเพิ่มทีหลัง</p></div>
+      <div class="why-item reveal"><div class="num">02</div><h3 data-i18n="why2.t">อะไหล่คุณภาพ</h3><p data-i18n="why2.p">เลือกใช้อะไหล่คุณภาพดี พร้อมรับประกันงานซ่อมทุกชิ้นงาน</p></div>
+      <div class="why-item reveal"><div class="num">03</div><h3 data-i18n="why3.t">ซ่อมไว รอรับได้</h3><p data-i18n="why3.p">งานซ่อมทั่วไปเสร็จภายในวันเดียว บางเคสรอรับได้เลยหน้าร้าน</p></div>
+      <div class="why-item reveal"><div class="num">04</div><h3 data-i18n="why4.t">รับซื้อราคาสูง</h3><p data-i18n="why4.p">ประเมินราคาตามสภาพเครื่องจริง จ่ายเงินสดทันทีไม่ต้องรอ</p></div>
+      <div class="why-item reveal"><div class="num">05</div><h3 data-i18n="why5.t">ปลดล็อกได้จริง</h3><p data-i18n="why5.p">เคสลืมรหัส ติดบัญชี หรือติดซิม เรามีวิธีจัดการให้ตรงจุด</p></div>
+      <div class="why-item reveal"><div class="num">06</div><h3 data-i18n="why6.t">คุยง่าย ราคากันเอง</h3><p data-i18n="why6.p">อยู่ในพื้นที่มานาน ลูกค้าประจำบอกต่อกันปากต่อปาก</p></div>
     </div>
   </div>
 </section>
 
 <section id="process">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="proc.eyebrow">ขายเครื่องกับเรา</div>
       <h2 data-i18n="proc.title">3 ขั้นตอนง่ายๆ รับเงินสดไว</h2>
     </div>
     <div class="process-grid">
-      <div class="process-step"><div class="pill-num">1</div><h3 data-i18n="proc1.t">แจ้งรุ่นและสภาพเครื่อง</h3><p data-i18n="proc1.p">โทรหรือแวะที่ร้าน แจ้งรุ่นเครื่องและสภาพเบื้องต้นให้ทีมงานทราบ</p></div>
-      <div class="process-step"><div class="pill-num">2</div><h3 data-i18n="proc2.t">ตรวจเครื่องฟรี</h3><p data-i18n="proc2.p">ทีมงานตรวจสภาพเครื่องจริงและแจ้งราคารับซื้อให้ทราบทันที ไม่มีค่าใช้จ่าย</p></div>
-      <div class="process-step"><div class="pill-num">3</div><h3 data-i18n="proc3.t">รับเงินสดทันที</h3><p data-i18n="proc3.p">ตกลงราคาแล้วรับเงินสดกลับบ้านได้เลย ไม่ต้องรอโอนหรือนัดครั้งหน้า</p></div>
+      <div class="process-step reveal"><div class="pill-num">1</div><h3 data-i18n="proc1.t">แจ้งรุ่นและสภาพเครื่อง</h3><p data-i18n="proc1.p">โทรหรือแวะที่ร้าน แจ้งรุ่นเครื่องและสภาพเบื้องต้นให้ทีมงานทราบ</p></div>
+      <div class="process-step reveal"><div class="pill-num">2</div><h3 data-i18n="proc2.t">ตรวจเครื่องฟรี</h3><p data-i18n="proc2.p">ทีมงานตรวจสภาพเครื่องจริงและแจ้งราคารับซื้อให้ทราบทันที ไม่มีค่าใช้จ่าย</p></div>
+      <div class="process-step reveal"><div class="pill-num">3</div><h3 data-i18n="proc3.t">รับเงินสดทันที</h3><p data-i18n="proc3.p">ตกลงราคาแล้วรับเงินสดกลับบ้านได้เลย ไม่ต้องรอโอนหรือนัดครั้งหน้า</p></div>
     </div>
   </div>
 </section>
 
 <section class="reviews" id="reviews">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="rev.eyebrow">เสียงจากลูกค้า</div>
       <h2 data-i18n="rev.title">ลูกค้าประจำพูดถึงร้านเราแบบนี้</h2>
     </div>
     <div class="review-grid">
-      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev1.p">จอแตกเอาไปเปลี่ยนตอนเช้า บ่ายมารับได้เลย ราคาบอกไว้ตรงตามนั้นทุกอย่าง</p><div class="who" data-i18n="rev1.w">คุณเอ, ลูกค้าประจำ</div></div>
-      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev2.p">เอาเครื่องเก่าไปขาย ตรวจไว ให้ราคาดีกว่าที่คิด จ่ายสดเลยไม่ต้องรอโอน</p><div class="who" data-i18n="rev2.w">คุณบี, ขายเครื่องเก่า</div></div>
-      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev3.p">ลืมรหัสเครื่องที่ซื้อมือสองมา ทางร้านช่วยปลดล็อกให้จนใช้งานได้ปกติ</p><div class="who" data-i18n="rev3.w">คุณซี, ปลดล็อกเครื่อง</div></div>
+      <div class="review-card reveal"><div class="stars">★★★★★</div><p data-i18n="rev1.p">จอแตกเอาไปเปลี่ยนตอนเช้า บ่ายมารับได้เลย ราคาบอกไว้ตรงตามนั้นทุกอย่าง</p><div class="who" data-i18n="rev1.w">คุณเอ, ลูกค้าประจำ</div></div>
+      <div class="review-card reveal"><div class="stars">★★★★★</div><p data-i18n="rev2.p">เอาเครื่องเก่าไปขาย ตรวจไว ให้ราคาดีกว่าที่คิด จ่ายสดเลยไม่ต้องรอโอน</p><div class="who" data-i18n="rev2.w">คุณบี, ขายเครื่องเก่า</div></div>
+      <div class="review-card reveal"><div class="stars">★★★★★</div><p data-i18n="rev3.p">ลืมรหัสเครื่องที่ซื้อมือสองมา ทางร้านช่วยปลดล็อกให้จนใช้งานได้ปกติ</p><div class="who" data-i18n="rev3.w">คุณซี, ปลดล็อกเครื่อง</div></div>
     </div>
   </div>
 </section>
 
 <section id="faq">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="faq.eyebrow">คำถามที่พบบ่อย</div>
       <h2 data-i18n="faq.title">ยังสงสัยอยู่? ลองอ่านตรงนี้ก่อน</h2>
     </div>
-    <div class="faq">
+    <div class="faq reveal">
       <details open>
         <summary data-i18n="faq1.q">ซ่อมโทรศัพท์ใช้เวลานานแค่ไหน?</summary>
         <p data-i18n="faq1.a">งานซ่อมทั่วไป เช่น เปลี่ยนจอหรือแบตเตอรี่ ส่วนใหญ่เสร็จภายในวันเดียว บางเคสรอรับได้เลยที่หน้าร้าน ขึ้นอยู่กับอาการเครื่องและอะไหล่ที่ต้องใช้</p>
@@ -593,7 +709,7 @@
 
 <section class="contact" id="contact">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head reveal">
       <div class="eyebrow" data-i18n="ct.eyebrow">ติดต่อร้าน</div>
       <h2 data-i18n="ct.title">แวะมาที่ร้าน หรือโทรสอบถามก่อนได้</h2>
     </div>
@@ -620,10 +736,10 @@
 
 <section>
   <div class="wrap">
-    <div class="cta-banner">
+    <div class="cta-banner reveal">
       <h2 data-i18n="banner.title">พร้อมซ่อม ขาย หรือปลดล็อกเครื่องแล้วหรือยัง?</h2>
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
-        <a href="tel:0800000000" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="banner.btnCall">โทรสอบถามเลย</a>
+        <a href="tel:0800000000" class="btn" style="background:var(--gold); color:#241A16;" data-i18n="banner.btnCall">โทรสอบถามเลย</a>
         <a href="#" class="btn btn-ghost" data-i18n="banner.btnLine">แชท LINE</a>
       </div>
     </div>
@@ -633,160 +749,499 @@
 <footer>
   <div class="wrap footer-inner">
     <span data-i18n="footer.left">© 2026 เอ ฮ่องแดง โทรศัพท์ — บริการซ่อม รับซื้อ ขาย ปลดล็อกโทรศัพท์มือถือ</span>
-    <span data-i18n="footer.right">สร้างเว็บไซต์ด้วย GitHub Pages</span>
+    <span data-i18n="footer.right">สร้างเว็บไซต์ด้วย GitHub Pages · รองรับ 9 ภาษา</span>
   </div>
 </footer>
+
+<button id="backTop" type="button" aria-label="Back to top">↑</button>
 
 <div class="edit-bar" id="editBar">
   <span data-i18n="edit.hint">โหมดแก้ไข: คลิกที่ข้อความไหนก็แก้ได้ แล้วกด "บันทึก" (บันทึกในเครื่องนี้เท่านั้น)</span>
   <button id="editSave" type="button" data-i18n="edit.save">บันทึก</button>
   <button id="editCancel" type="button" data-i18n="edit.cancel">ยกเลิก</button>
 </div>
-
 <script>
 (function(){
-  var STORAGE_KEY = 'ahd_phones_v1';
-  var CONTENT_KEY = 'ahd_content_v1';
-  var RATING_KEY = 'ahd_ratings_v1';
-  var LANG_KEY = 'ahd_lang';
-  var PASS_KEY = 'ahd_admin_pass';
-  var ADMIN_PASS = 'admin1234';
+  'use strict';
+  var STORAGE_KEY='ahd_phones_v2', CONTENT_KEY='ahd_content_v2', RATING_KEY='ahd_ratings_v1',
+      LANG_KEY='ahd_lang', THEME_KEY='ahd_theme', PASS_KEY='ahd_admin_pass';
+  var ADMIN_PASS='admin1234';
+  var currentLang='th';
+  try{ currentLang=localStorage.getItem(LANG_KEY)||'th'; }catch(e){}
 
-  var currentLang = 'th';
-  try { currentLang = localStorage.getItem(LANG_KEY) || 'th'; } catch(e) {}
+  var CONTENT={};
+  try{ var saved=localStorage.getItem(CONTENT_KEY); if(saved) CONTENT=JSON.parse(saved); }catch(e){}
 
-  var CONTENT = {};
-  try {
-    var saved = localStorage.getItem(CONTENT_KEY);
-    if(saved) CONTENT = JSON.parse(saved);
-  } catch(e) {}
+  /* ---------- Toast ---------- */
+  var toastEl=document.getElementById('toast'), toastTimer=null;
+  function toast(msg){
+    toastEl.textContent=msg; toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){ toastEl.classList.remove('show'); },2600);
+  }
 
-  var LANGS = [
-    { code:'th', label:'ไทย', dir:'ltr' },
-    { code:'en', label:'English', dir:'ltr' }
-  ];
+  /* ---------- Theme ---------- */
+  var themeBtn=document.getElementById('themeToggle');
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme',t);
+    themeBtn.textContent = t==='dark' ? '☀️' : '🌙';
+    try{ localStorage.setItem(THEME_KEY,t); }catch(e){}
+  }
+  var savedTheme='light';
+  try{ savedTheme=localStorage.getItem(THEME_KEY)||'light'; }catch(e){}
+  applyTheme(savedTheme);
+  themeBtn.addEventListener('click',function(){ 
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+  });
 
-  var I18N = {
-    en: {
-      "ticker":"✦ <b>Fast repair — same-day service</b> ✦ We buy used phones at top prices ✦ Quality second-hand phones ✦ Unlock iCloud / Google / screen lock ✦ Price quoted before every repair",
-      "strip":"★ A Hong Daeng Mobile ★ Price quoted before every repair ★ Fast repair ★ Top buy-back prices ★",
+  /* ---------- I18N (9 languages) ---------- */
+  var I18N={
+    en:{
+      "ticker":"✦ <b>Fast repair — same-day service</b> ✦ Top prices for used phones ✦ Quality second-hand phones ✦ Unlock iCloud / Google / screen lock ✦ Quote before every repair",
+      "strip":"★ A Hong Daeng Mobile ★ Quote before every repair ★ Fast repair ★ Top buy-back prices ★",
       "nav.services":"Services","nav.shop":"Second-hand","nav.why":"Why us","nav.process":"Sell your phone","nav.reviews":"Reviews","nav.contact":"Contact","nav.line":"LINE Chat","nav.call":"Call 080-000-0000",
       "hero.title":"Cracked screen, weak battery, or want a new phone — one shop does it all",
       "hero.lead":"We repair all phone models, buy used phones at great prices, sell quality second-hand devices, and unlock locked phones. Free inspection and a clear quote before any work.",
       "hero.btnCall":"Call us now","hero.btnServices":"See all services",
       "hero.s1b":"10+ yrs","hero.s1s":"Repair experience","hero.s2b":"Same day","hero.s2s":"Most repairs","hero.s3b":"Warranty","hero.s3s":"Quality parts",
       "svc.eyebrow":"Our services","svc.title":"Everything mobile in one place","svc.sub":"Pick the service you need. Every job starts with an inspection and a clear quote.",
-      "svc1.badge":"Popular","svc1.name":"Phone repair","svc1.desc":"Screen, battery, charging port, speaker, mic and camera replacement.","svc1.l1":"Quality parts","svc1.l2":"Repair warranty","svc1.l3":"Same-day service","svc1.link":"Call to book →",
-      "svc2.name":"We buy used phones","svc2.desc":"Any condition. Cash paid on the spot.","svc2.l1":"Instant cash","svc2.l2":"Fair price","svc2.l3":"Any condition","svc2.link":"Get a quote →",
+      "svc1.badge":"Popular","svc1.name":"Phone repair","svc1.desc":"Screen, battery, charging port, speaker, mic and camera replacement for iPhone & Android.","svc1.l1":"Quality parts","svc1.l2":"Repair warranty","svc1.l3":"Same-day service","svc1.link":"Call to book →",
+      "svc2.name":"We buy used phones","svc2.desc":"Any condition — cash paid on the spot.","svc2.l1":"Instant cash","svc2.l2":"Fair price","svc2.l3":"Any condition","svc2.link":"Get a quote →",
       "svc3.name":"Second-hand phones","svc3.desc":"Inspected used phones with accessories.","svc3.l1":"Inspected","svc3.l2":"Shop warranty","svc3.link":"See stock →",
       "svc4.name":"Unlock / reset","svc4.desc":"Forgot password, iCloud/Google lock, SIM unlock.","svc4.l1":"iCloud/Google","svc4.l2":"SIM unlock","svc4.link":"Ask about your case →",
-      "shop.eyebrow":"Second-hand stock","shop.title":"Pick a phone, rate it, try the calculator","shop.sub":"Tap stars to rate, or tap Choose to see monthly installment.",
+      "shop.eyebrow":"Second-hand stock","shop.title":"Pick a phone, rate it, try the calculator","shop.sub":"Tap stars to rate a phone, or tap \"Choose this phone\" to see estimated monthly installments.",
+      "shop.search":"Search phone model...","sort.new":"Sort: newest","sort.low":"Price: low → high","sort.high":"Price: high → low","shop.empty":"No products found.",
       "phone.choose":"Choose this phone →","phone.delete":"Remove item",
-      "calc.title":"Calculate installments","calc.sub":"Choose a phone, enter down payment and term.",
+      "calc.title":"Calculate installments","calc.sub":"Choose a phone, enter down payment and term to see an estimate.",
       "calc.phone":"Selected phone","calc.price":"Price (THB)","calc.down":"Down payment (THB)","calc.months":"Term","calc.btn":"Calculate",
       "calc.lPrice":"Item price","calc.lDown":"Down payment","calc.lFin":"Amount to finance","calc.lFee":"Fee (~5%)","calc.lMonthly":"Monthly","calc.lTotal":"Total",
-      "calc.note":"*Preliminary estimate only.","months":"months",
+      "calc.note":"*Preliminary estimate for decision-making only. Actual amount depends on device condition and shop terms at time of purchase.","months":"months",
       "mo3":"3 months","mo6":"6 months","mo10":"10 months","mo12":"12 months","mo24":"24 months",
-      "why.eyebrow":"Why choose us","why.title":"Precise repairs, straightforward deals","why.sub":"Clear prices, no surprises.",
-      "why1.t":"Quote before repair","why1.p":"Inspect and quote first — no hidden fees.","why2.t":"Quality parts","why2.p":"Good parts with warranty.","why3.t":"Fast repairs","why3.p":"Most done same day.","why4.t":"Top buy-back","why4.p":"Fair assessment, instant cash.","why5.t":"Real unlocking","why5.p":"We handle all lock cases.","why6.t":"Friendly prices","why6.p":"Local shop, word of mouth.",
+      "why.eyebrow":"Why choose us","why.title":"Precise repairs, straightforward deals","why.sub":"Not just repairs — we want you to walk in and feel at ease. Clear prices, no surprises.",
+      "why1.t":"Quote before repair","why1.p":"Inspect and quote first — no hidden fees.","why2.t":"Quality parts","why2.p":"Good parts with warranty on every job.","why3.t":"Fast repairs","why3.p":"Most repairs done same day.","why4.t":"Top buy-back","why4.p":"Fair assessment, instant cash.","why5.t":"Real unlocking","why5.p":"We handle all lock cases.","why6.t":"Friendly prices","why6.p":"Long-time local shop, word of mouth.",
       "proc.eyebrow":"Sell to us","proc.title":"3 easy steps, cash in hand",
-      "proc1.t":"Tell us model & condition","proc1.p":"Call or visit.","proc2.t":"Free inspection","proc2.p":"We check and quote on spot.","proc3.t":"Cash immediately","proc3.p":"Agree and take cash home.",
-      "rev.eyebrow":"Reviews","rev.title":"What customers say",
-      "rev1.p":"Screen cracked — morning drop-off, afternoon pickup. Price as quoted.","rev1.w":"Mr. A, regular",
-      "rev2.p":"Sold old phone — quick, good price, cash on spot.","rev2.w":"Mr. B",
-      "rev3.p":"Forgot password on used phone — shop unlocked it.","rev3.w":"Mr. C",
-      "faq.eyebrow":"FAQ","faq.title":"Still unsure? Read this",
-      "faq1.q":"How long does repair take?","faq1.a":"Most same day, some while you wait.",
-      "faq2.q":"Do you buy broken phones?","faq2.a":"Yes, any condition. We inspect and quote.",
-      "faq3.q":"Warranty on used phones?","faq3.a":"Yes, shop warranty as stated.",
-      "faq4.q":"Can you unlock iCloud/Google?","faq4.a":"Depends on case. Bring phone for assessment.",
-      "ct.eyebrow":"Contact","ct.title":"Visit or call ahead",
-      "ct.addrLabel":"Address","ct.addr":"000 Example Road","ct.phoneLabel":"Phone","ct.lineLabel":"LINE","ct.btnCall":"Call now","ct.btnLine":"LINE Chat",
-      "ct.h1":"Mon - Fri","ct.h2":"Sat - Sun","ct.h3":"Holidays",
-      "banner.title":"Ready to repair, sell, or unlock?","banner.btnCall":"Call us","banner.btnLine":"LINE",
-      "footer.left":"© 2026 A Hong Daeng Mobile","footer.right":"Built with GitHub Pages",
-      "admin.toggle":"Admin mode","admin.title":"Add product","admin.note":"Upload photo, set name and price.","admin.fImg":"Photo","admin.fName":"Model","admin.fPrice":"Price (THB)","admin.fDesc":"Description","admin.addBtn":"Add product",
-      "edit.toggle":"Edit website","edit.on":"Exit edit","edit.save":"Save","edit.cancel":"Cancel","edit.hint":"Edit mode: click text to edit, then save (saved locally only).","edit.saved":"Saved!","edit.error":"Save failed.",
-      "a.down":"Down payment exceeds price.","a.add":"Enter name and price.","a.del":"Delete this product?","admin.wrong":"Wrong password."
+      "proc1.t":"Tell us model & condition","proc1.p":"Call or visit the shop.","proc2.t":"Free inspection","proc2.p":"We check and quote on the spot, free of charge.","proc3.t":"Cash immediately","proc3.p":"Agree on the price and take cash home right away.",
+      "rev.eyebrow":"Reviews","rev.title":"What our regulars say",
+      "rev1.p":"Cracked screen — dropped off in the morning, picked up in the afternoon. Price exactly as quoted.","rev1.w":"Mr. A, regular customer",
+      "rev2.p":"Sold my old phone — quick check, better price than expected, cash on the spot.","rev2.w":"Mr. B, sold old phone",
+      "rev3.p":"Forgot the password on my second-hand phone — the shop unlocked it for me.","rev3.w":"Mr. C, phone unlocked",
+      "faq.eyebrow":"FAQ","faq.title":"Still unsure? Check here first",
+      "faq1.q":"How long does a repair take?","faq1.a":"Common repairs like screen or battery replacement are mostly done within the same day. Some cases can be waited for at the shop, depending on the issue and parts needed.",
+      "faq2.q":"Do you buy phones with cracked screens or that won't turn on?","faq2.a":"Yes, we buy phones in any condition. We inspect the actual device and quote before you decide.",
+      "faq3.q":"Is there a warranty on second-hand phones?","faq3.a":"Every device is inspected before sale and comes with a shop warranty as stated at purchase.",
+      "faq4.q":"Can you really unlock iCloud or Google locked phones?","faq4.a":"It depends on each case. Bring the device in for our team to assess feasibility and time required.",
+      "ct.eyebrow":"Contact","ct.title":"Visit the shop or call ahead",
+      "ct.addrLabel":"Shop address","ct.addr":"000 Example Road, Subdistrict, District, Province 00000","ct.phoneLabel":"Phone","ct.lineLabel":"LINE Official","ct.btnCall":"Call now","ct.btnLine":"LINE Chat",
+      "ct.h1":"Mon - Fri","ct.h2":"Sat - Sun","ct.h3":"Public holidays",
+      "banner.title":"Ready to repair, sell, or unlock your phone?","banner.btnCall":"Call us now","banner.btnLine":"LINE Chat",
+      "footer.left":"© 2026 A Hong Daeng Mobile — repair, buy-back, sales & unlocking","footer.right":"Built with GitHub Pages · 9 languages",
+      "admin.toggle":"Admin mode","admin.title":"Add new product","admin.note":"Upload a photo, set name and price, then add — it appears in the shop immediately.","admin.fImg":"Photo","admin.fName":"Model / name","admin.fPrice":"Price (THB)","admin.fDesc":"Short description","admin.addBtn":"Add product",
+      "edit.toggle":"Edit website","edit.on":"Exit edit","edit.save":"Save","edit.cancel":"Cancel","edit.hint":"Edit mode: click any outlined text to edit, then press Save (stored on this device only).","edit.saved":"Saved!","edit.error":"Save failed.",
+      "a.down":"Down payment exceeds price.","a.add":"Please enter name and price.","a.del":"Delete this product?","admin.wrong":"Wrong password."
+    },
+    hi:{
+      "ticker":"✦ <b>तेज़ रिपेयर — उसी दिन सेवा</b> ✦ पुराने फ़ोन की उच्च कीमत ✦ गुणवत्तापूर्ण सेकंड-हैंड फ़ोन ✦ iCloud / Google / स्क्रीन लॉक अनलॉक ✦ हर रिपेयर से पहले कोटेशन",
+      "strip":"★ ए होंग दैंग मोबाइल ★ हर रिपेयर से पहले कोटेशन ★ तेज़ रिपेयर ★ उच्च ख़रीद मूल्य ★",
+      "nav.services":"सेवाएँ","nav.shop":"सेकंड-हैंड","nav.why":"हम क्यों","nav.process":"फ़ोन बेचें","nav.reviews":"समीक्षा","nav.contact":"संपर्क","nav.line":"LINE चैट","nav.call":"080-000-0000 कॉल करें",
+      "hero.title":"टूटी स्क्रीन, कमज़ोर बैटरी या नया फ़ोन — एक ही दुकान पर सब कुछ",
+      "hero.lead":"हर मॉडल की मरम्मत, पुराने फ़ोन की उच्च कीमत पर ख़रीद, अच्छी स्थिति वाले सेकंड-हैंड फ़ोन की बिक्री और अनलॉकिंग। हर काम से पहले जाँच और साफ़ कोटेशन।",
+      "hero.btnCall":"अभी कॉल करें","hero.btnServices":"सभी सेवाएँ देखें",
+      "hero.s1b":"10+ वर्ष","hero.s1s":"रिपेयर अनुभव","hero.s2b":"उसी दिन","hero.s2s":"सामान्य मरम्मत","hero.s3b":"वारंटी","hero.s3s":"गुणवत्तापूर्ण पुर्ज़े",
+      "svc.eyebrow":"हमारी सेवाएँ","svc.title":"मोबाइल की हर समस्या का एक ही पता","svc.sub":"ज़रूरत के अनुसार सेवा चुनें। हर काम जाँच और साफ़ कोटेशन के साथ शुरू होता है।",
+      "svc1.badge":"लोकप्रिय","svc1.name":"फ़ोन रिपेयर","svc1.desc":"स्क्रीन, बैटरी, चार्जिंग पोर्ट, स्पीकर, माइक और कैमरा बदलना (iPhone व Android)।","svc1.l1":"गुणवत्तापूर्ण पुर्ज़े","svc1.l2":"रिपेयर वारंटी","svc1.l3":"उसी दिन सेवा","svc1.link":"कॉल करें →",
+      "svc2.name":"पुराने फ़ोन की ख़रीद","svc2.desc":"हर हालत में ख़रीद, तुरंत नक़द भुगतान।","svc2.l1":"तुरंत नक़द","svc2.l2":"उचित कीमत","svc2.l3":"हर हालत","svc2.link":"कीमत पूछें →",
+      "svc3.name":"सेकंड-हैंड फ़ोन","svc3.desc":"जाँचे हुए फ़ोन, सामान सहित।","svc3.l1":"बिक्री से पहले जाँच","svc3.l2":"दुकान वारंटी","svc3.link":"स्टॉक देखें →",
+      "svc4.name":"अनलॉक / रीसेट","svc4.desc":"पासवर्ड भूल गए, iCloud/Google लॉक, SIM अनलॉक।","svc4.l1":"iCloud/Google","svc4.l2":"SIM अनलॉक","svc4.link":"पूछें →",
+      "shop.eyebrow":"सेकंड-हैंड स्टॉक","shop.title":"फ़ोन चुनें, स्टार दें, EMI आज़माएँ","shop.sub":"स्टार दबाकर रेट करें या \"यह फ़ोन चुनें\" से मासिक किस्त देखें।",
+      "shop.search":"फ़ोन मॉडल खोजें...","sort.new":"क्रम: नवीनतम","sort.low":"कीमत: कम → अधिक","sort.high":"कीमत: अधिक → कम","shop.empty":"कोई सामान नहीं मिला।",
+      "phone.choose":"यह फ़ोन चुनें →","phone.delete":"हटाएँ",
+      "calc.title":"EMI कैलकुलेटर","calc.sub":"फ़ोन चुनें, डाउन पेमेंट और अवधि डालें।",
+      "calc.phone":"चुना हुआ फ़ोन","calc.price":"कीमत (बाट)","calc.down":"डाउन पेमेंट (बाट)","calc.months":"अवधि","calc.btn":"किस्त निकालें",
+      "calc.lPrice":"सामान की कीमत","calc.lDown":"डाउन पेमेंट","calc.lFin":"बाक़ी राशि","calc.lFee":"शुल्क (~5%)","calc.lMonthly":"प्रति माह","calc.lTotal":"कुल",
+      "calc.note":"*केवल प्रारंभिक अनुमान। असली राशि दुकान पर जाँच के बाद तय होगी।","months":"माह",
+      "mo3":"3 माह","mo6":"6 माह","mo10":"10 माह","mo12":"12 माह","mo24":"24 माह",
+      "why.eyebrow":"हम क्यों","why.title":"सटीक रिपेयर, सीधा सौदा","why.sub":"साफ़ कीमतें, कोई आश्चर्य नहीं।",
+      "why1.t":"रिपेयर से पहले कोटेशन","why1.p":"पहले जाँच और कोटेशन, बाद में कोई अतिरिक्त नहीं।","why2.t":"गुणवत्तापूर्ण पुर्ज़े","why2.p":"अच्छे पुर्ज़े, वारंटी सहित।","why3.t":"तेज़ रिपेयर","why3.p":"अधिकांश उसी दिन।","why4.t":"उच्च ख़रीद मूल्य","why4.p":"उचित आकलन, तुरंत नक़द।","why5.t":"असली अनलॉकिंग","why5.p":"हर लॉक का समाधान।","why6.t":"दोस्ताना कीमतें","why6.p":"पुरानी दुकान, मुँह-से-मुँह।",
+      "proc.eyebrow":"हमें बेचें","proc.title":"3 आसान कदम, तुरंत नक़द",
+      "proc1.t":"मॉडल और हालत बताएँ","proc1.p":"कॉल करें या दुकान पर आएँ।","proc2.t":"मुफ़्त जाँच","proc2.p":"मौके पर आकलन, बिना शुल्क।","proc3.t":"तुरंत नक़द","proc3.p":"राज़ी हुए? नक़द लेकर जाएँ।",
+      "rev.eyebrow":"ग्राहकों की राय","rev.title":"पुराने ग्राहक क्या कहते हैं",
+      "rev1.p":"स्क्रीन टूटी — सुबह छोड़ा, दोपहर को मिल गया। कीमत वही, जो बताई थी।","rev1.w":"श्री ए, नियमित ग्राहक",
+      "rev2.p":"पुराना फ़ोन बेचा — तेज़ आकलन, सोच से अच्छी कीमत, तुरंत नक़द।","rev2.w":"श्री बी",
+      "rev3.p":"पासवर्ड भूल गया — दुकान ने अनलॉक कर दिया।","rev3.w":"श्री सी",
+      "faq.eyebrow":"अक्सर पूछे सवाल","faq.title":"अभी भी शक है?",
+      "faq1.q":"रिपेयर में कितना समय लगता है?","faq1.a":"सामान्य रिपेयर अधिकांश उसी दिन; कुछ की दुकान पर प्रतीक्षा करें।",
+      "faq2.q":"टूटे या बंद फ़ोन ख़रीदते हैं?","faq2.a":"हाँ, हर हालत में। जाँच के बाद कोटेशन।",
+      "faq3.q":"सेकंड-हैंड फ़ोन पर वारंटी?","faq3.a":"हाँ, दुकान वारंटी।",
+      "faq4.q":"iCloud/Google लॉक खुल सकता है?","faq4.a":"केस पर निर्भर। दुกान पर जाँच कराएँ।",
+      "ct.eyebrow":"संपर्क","ct.title":"आएँ या पहले कॉल करें",
+      "ct.addrLabel":"दुकान का पता","ct.addr":"000 नमूना रोड, उपनगर, ज़िला, प्रांत 00000","ct.phoneLabel":"फ़ोन","ct.lineLabel":"LINE आईडी","ct.btnCall":"अभी कॉल करें","ct.btnLine":"LINE चैट",
+      "ct.h1":"सोम–शुक्र","ct.h2":"शनि–रवि","ct.h3":"छुट्टियाँ",
+      "banner.title":"रिपेयर, बिक्री या अनलॉक के लिए तैयार?","banner.btnCall":"अभी कॉल करें","banner.btnLine":"LINE चैट",
+      "footer.left":"© 2026 ए होंग दैंग मोबाइल — रिपेयर·ख़रीद·बिक्री·अनलॉक","footer.right":"GitHub Pages से निर्मित · 9 भाषाएँ",
+      "admin.toggle":"एडमिन मोड","admin.title":"नया उत्पाद जोड़ें","admin.note":"फ़ोटो, नाम और कीमत डालकर जोड़ें — तुरंत दिखेगा।","admin.fImg":"फ़ोटो","admin.fName":"मॉडल / नाम","admin.fPrice":"कीमत (बाट)","admin.fDesc":"संक्षिप्त विवरण","admin.addBtn":"उत्पाद जोड़ें",
+      "edit.toggle":"वेबसाइट संपादित करें","edit.on":"संपादन बंद करें","edit.save":"सहेजें","edit.cancel":"रद्द करें","edit.hint":"संपादन मोड: रेखांकित टेक्स्ट पर क्लिक करके बदलें, फिर सहेजें (केवल इस डिवाइस पर)।","edit.saved":"सहेजा गया!","edit.error":"सहेजना विफल।",
+      "a.down":"डाउन पेमेंट कीमत से अधिक है।","a.add":"नाम और कीमत दर्ज करें।","a.del":"यह उत्पाद हटाएँ?","admin.wrong":"गलत पासवर्ड।"
+    },
+    ru:{
+      "ticker":"✦ <b>Быстрый ремонт — в день обращения</b> ✦ Высокие цены выкупа ✦ Качественные б/у телефоны ✦ Разблокировка iCloud / Google / пароля ✦ Цена до ремонта",
+      "strip":"★ A Hong Daeng Mobile ★ Цена до ремонта ★ Быстрый ремонт ★ Высокий выкуп ★",
+      "nav.services":"Услуги","nav.shop":"Б/у телефоны","nav.why":"Почему мы","nav.process":"Продать телефон","nav.reviews":"Отзывы","nav.contact":"Контакты","nav.line":"Написать в LINE","nav.call":"Позвонить 080-000-0000",
+      "hero.title":"Разбит экран, сел аккумулятор или нужен новый телефон — всё в одном месте",
+      "hero.lead":"Ремонт любых моделей, выкуп б/у телефонов по высокой цене, продажа проверенных аппаратов и разблокировка. Осмотр и точная цена — до начала работ.",
+      "hero.btnCall":"Позвонить сейчас","hero.btnServices":"Все услуги",
+      "hero.s1b":"10+ лет","hero.s1s":"Опыт ремонта","hero.s2b":"В тот же день","hero.s2s":"Большинство работ","hero.s3b":"Гарантия","hero.s3s":"Качественные запчасти",
+      "svc.eyebrow":"Наши услуги","svc.title":"Все вопросы по телефону — в одном месте","svc.sub":"Выберите нужную услугу. Каждая работа начинается с осмотра и точной цены.",
+      "svc1.badge":"Популярно","svc1.name":"Ремонт телефонов","svc1.desc":"Замена экрана, аккумулятора, порта, динамика, микрофона и камеры (iPhone и Android).","svc1.l1":"Качественные запчасти","svc1.l2":"Гарантия на ремонт","svc1.l3":"В день обращения","svc1.link":"Позвонить и записаться →",
+      "svc2.name":"Выкуп б/у телефонов","svc2.desc":"Выкупаем в любом состоянии, деньги сразу.","svc2.l1":"Наличные сразу","svc2.l2":"Честная цена","svc2.l3":"Любое состояние","svc2.link":"Оценить телефон →",
+      "svc3.name":"Продажа б/у телефонов","svc3.desc":"Проверенные аппараты с аксессуарами.","svc3.l1":"Проверка перед продажей","svc3.l2":"Гарантия магазина","svc3.link":"Смотреть витрину →",
+      "svc4.name":"Разблокировка / сброс","svc4.desc":"Забыли пароль, блокировка iCloud/Google, SIM-lock.","svc4.l1":"iCloud/Google","svc4.l2":"SIM-разблокировка","svc4.link":"Задать вопрос →",
+      "shop.eyebrow":"Б/у в наличии","shop.title":"Выберите телефон, поставьте оценку, рассчитайте рассрочку","shop.sub":"Нажмите на звёздочки или «Выбрать этот телефон», чтобы увидеть ежемесячный платёж.",
+      "shop.search":"Поиск модели...","sort.new":"Сортировка: новые","sort.low":"Цена: по возрастанию","sort.high":"Цена: по убыванию","shop.empty":"Ничего не найдено.",
+      "phone.choose":"Выбрать этот телефон →","phone.delete":"Удалить",
+      "calc.title":"Расчёт рассрочки","calc.sub":"Выберите телефон, внесите первый взнос и срок.",
+      "calc.phone":"Выбранный телефон","calc.price":"Цена (бат)","calc.down":"Первый взнос (бат)","calc.months":"Срок","calc.btn":"Рассчитать",
+      "calc.lPrice":"Цена товара","calc.lDown":"Первый взнос","calc.lFin":"Сумма рассрочки","calc.lFee":"Комиссия (~5%)","calc.lMonthly":"В месяц","calc.lTotal":"Итого",
+      "calc.note":"*Предварительный расчёт. Точная сумма — в магазине.","months":"мес.",
+      "mo3":"3 мес.","mo6":"6 мес.","mo10":"10 мес.","mo12":"12 мес.","mo24":"24 мес.",
+      "why.eyebrow":"Почему мы","why.title":"Точный ремонт и честные сделки","why.sub":"Прозрачные цены, без сюрпризов.",
+      "why1.t":"Цена до ремонта","why1.p":"Осмотр и цена заранее, без доплат.","why2.t":"Качественные запчасти","why2.p":"Хорошие запчасти с гарантией.","why3.t":"Быстрый ремонт","why3.p":"Большинство — в тот же день.","why4.t":"Высокий выкуп","why4.p":"Честная оценка, деньги сразу.","why5.t":"Реальная разблокировка","why5.p":"Решаем любые блокировки.","why6.t":"Дружелюбные цены","why6.p":"Местный магазин, сарафанное радио.",
+      "proc.eyebrow":"Продать нам","proc.title":"3 простых шага — деньги в руках",
+      "proc1.t":"Назовите модель и состояние","proc1.p":"Позвоните или зайдите.","proc2.t":"Бесплатная проверка","proc2.p":"Осмотр и цена сразу, бесплатно.","proc3.t":"Деньги сразу","proc3.p":"Согласились — получили наличные.",
+      "rev.eyebrow":"Отзывы","rev.title":"Что говорят постоянные клиенты",
+      "rev1.p":"Треснул экран — оставил утром, забрал днём. Цена как в смете.","rev1.w":"Клиент А, постоянный",
+      "rev2.p":"Продал старый телефон — быстро и дороже ожиданий, деньги сразу.","rev2.w":"Клиент Б",
+      "rev3.p":"Забыл пароль на б/у телефоне — разблокировали в магазине.","rev3.w":"Клиент В",
+      "faq.eyebrow":"Частые вопросы","faq.title":"Остались вопросы?",
+      "faq1.q":"Сколько длится ремонт?","faq1.a":"Обычные работы — в тот же день, часть — с ожиданием.",
+      "faq2.q":"Выкупаете разбитые телефоны?","faq2.a":"Да, любые. Осмотр и цена перед решением.",
+      "faq3.q":"Есть ли гарантия на б/у телефоны?","faq3.a":"Да, гарантия магазина.",
+      "faq4.q":"Можно ли снять блокировку iCloud/Google?","faq4.a":"Зависит от случая. Приносите на оценку.",
+      "ct.eyebrow":"Контакты","ct.title":"Зайдите или позвоните заранее",
+      "ct.addrLabel":"Адрес магазина","ct.addr":"000 Примерная ул., район, провинция 00000","ct.phoneLabel":"Телефон","ct.lineLabel":"LINE магазина","ct.btnCall":"Позвонить","ct.btnLine":"Написать в LINE",
+      "ct.h1":"Пн–Пт","ct.h2":"Сб–Вс","ct.h3":"Праздники",
+      "banner.title":"Готовы отремонтировать, продать или разблокировать?","banner.btnCall":"Позвонить","banner.btnLine":"LINE",
+      "footer.left":"© 2026 A Hong Daeng Mobile — ремонт, выкуп, продажа, разблокировка","footer.right":"Создано на GitHub Pages · 9 языков",
+      "admin.toggle":"Режим админа","admin.title":"Добавить товар","admin.note":"Загрузите фото, укажите название и цену — товар появится сразу.","admin.fImg":"Фото","admin.fName":"Модель / название","admin.fPrice":"Цена (бат)","admin.fDesc":"Краткое описание","admin.addBtn":"Добавить",
+      "edit.toggle":"Редактировать сайт","edit.on":"Выйти из редактирования","edit.save":"Сохранить","edit.cancel":"Отмена","edit.hint":"Режим редактирования: кликните по тексту с рамкой, измените и нажмите Сохранить (только на этом устройстве).","edit.saved":"Сохранено!","edit.error":"Ошибка сохранения.",
+      "a.down":"Первый взнос больше цены.","a.add":"Введите название и цену.","a.del":"Удалить этот товар?","admin.wrong":"Неверный пароль."
+    },
+    zh:{
+      "ticker":"✦ <b>快速维修 当天可取</b> ✦ 高价回收旧机 ✦ 优质二手手机 ✦ 解锁 iCloud / Google / 屏幕锁 ✦ 维修前先报价",
+      "strip":"★ A  Hong Daeng 手机店 ★ 维修前先报价 ★ 快速维修 ★ 高价回收 ★",
+      "nav.services":"服务","nav.shop":"二手手机","nav.why":"为什么选择我们","nav.process":"卖手机流程","nav.reviews":"客户评价","nav.contact":"联系我们","nav.line":"LINE 咨询","nav.call":"致电 080-000-0000",
+      "hero.title":"屏幕碎了、电池不行了、想换新机——一家店全搞定",
+      "hero.lead":"维修各品牌手机、高价回收二手手机、销售优质二手机、解锁被锁设备。所有服务先检测、先报价，绝无隐藏收费。",
+      "hero.btnCall":"立即致电","hero.btnServices":"查看全部服务",
+      "hero.s1b":"10+ 年","hero.s1s":"维修经验","hero.s2b":"当天完成","hero.s2s":"常规维修","hero.s3b":"维修质保","hero.s3s":"优质配件",
+      "svc.eyebrow":"本店服务","svc.title":"手机问题，一家店全解决","svc.sub":"按需选择服务。每项服务开始前都会先检测并明确报价。",
+      "svc1.badge":"热门","svc1.name":"手机维修","svc1.desc":"更换屏幕、电池、充电口、扬声器、麦克风和摄像头（iPhone / Android）。","svc1.l1":"优质配件","svc1.l2":"维修质保","svc1.l3":"当天维修可取","svc1.link":"电话预约 →",
+      "svc2.name":"二手手机回收","svc2.desc":"各种成色都收，当场现金支付。","svc2.l1":"当场付现","svc2.l2":"价格公道","svc2.l3":"任何成色","svc2.link":"免费估价 →",
+      "svc3.name":"二手手机销售","svc3.desc":"经检测的二手手机，附配件。","svc3.l1":"售前检测","svc3.l2":"店铺保修","svc3.link":"查看库存 →",
+      "svc4.name":"解锁 / 刷机","svc4.desc":"忘记密码、iCloud/Google 锁、SIM 卡解锁。","svc4.l1":"iCloud/Google","svc4.l2":"SIM 解锁","svc4.link":"咨询您的情况 →",
+      "shop.eyebrow":"二手现货","shop.title":"选手机、打星、试算分期","shop.sub":"点击星星评分，或点「选择此机」查看每月分期。",
+      "shop.search":"搜索手机型号...","sort.new":"排序：最新","sort.low":"价格：从低到高","sort.high":"价格：从高到低","shop.empty":"没有找到商品。",
+      "phone.choose":"选择此机 →","phone.delete":"删除商品",
+      "calc.title":"分期试算","calc.sub":"选择机型，输入首付和期数。",
+      "calc.phone":"所选机型","calc.price":"售价（泰铢）","calc.down":"首付（泰铢）","calc.months":"分期期数","calc.btn":"计算月供",
+      "calc.lPrice":"商品价格","calc.lDown":"首付","calc.lFin":"贷款金额","calc.lFee":"手续费（约5%）","calc.lMonthly":"每月还款","calc.lTotal":"总计",
+      "calc.note":"*仅为初步估算，实际金额以门店检测和交易条件为准。","months":"个月",
+      "mo3":"3 个月","mo6":"6 个月","mo10":"10 个月","mo12":"12 个月","mo24":"24 个月",
+      "why.eyebrow":"为什么选择我们","why.title":"精准维修，透明交易","why.sub":"价格透明，绝无意外。",
+      "why1.t":"先报价后维修","why1.p":"先检测并报价，绝无事后加价。","why2.t":"优质配件","why2.p":"优质配件，维修有保障。","why3.t":"快速维修","why3.p":"大部分当天完成。","why4.t":"高价回收","why4.p":"公道估价，当场付现。","why5.t":"真实解锁","why5.p":"各类锁机问题都能处理。","why6.t":"价格亲民","why6.p":"本地老店，口口相传。",
+      "proc.eyebrow":"卖给我们","proc.title":"3 步搞定，现金到手",
+      "proc1.t":"告知型号和成色","proc1.p":"来电或到店。","proc2.t":"免费检测","proc2.p":"现场检测并报价。","proc3.t":"当场拿现金","proc3.p":"同意价格即可拿钱回家。",
+      "rev.eyebrow":"客户评价","rev.title":"老客户这样评价我们",
+      "rev1.p":"早上送修碎屏，下午就能取。价格和报价一致。","rev1.w":"A 先生，老客户",
+      "rev2.p":"卖旧手机，检测快，价格比预期好，当场现金。","rev2.w":"B 先生",
+      "rev3.p":"二手机忘记密码，店家帮忙解锁成功。","rev3.w":"C 先生",
+      "faq.eyebrow":"常见问题","faq.title":"还有疑问？先看看这里",
+      "faq1.q":"维修要多久？","faq1.a":"常规维修如换屏换电池大多当天完成，部分可立等可取。",
+      "faq2.q":"碎屏或开不了机的手机收吗？","faq2.a":"收，任何成色。检测后报价。",
+      "faq3.q":"二手机有保修吗？","faq3.a":"有，按购买时告知的店铺保修期。",
+      "faq4.q":"能解锁 iCloud/Google 锁吗？","faq4.a":"视情况而定，建议带机来店评估。",
+      "ct.eyebrow":"联系我们","ct.title":"欢迎到店，或先来电",
+      "ct.addrLabel":"店铺地址","ct.addr":"000 示例路（请修改为实际地址）","ct.phoneLabel":"电话","ct.lineLabel":"LINE 官方","ct.btnCall":"立即拨打","ct.btnLine":"LINE 咨询",
+      "ct.h1":"周一至周五","ct.h2":"周六至周日","ct.h3":"法定节假日",
+      "banner.title":"准备好维修、出售或解锁手机了吗？","banner.btnCall":"立即致电","banner.btnLine":"LINE 咨询",
+      "footer.left":"© 2026 A Hong Daeng 手机 — 维修·回收·销售·解锁","footer.right":"由 GitHub Pages 构建 · 支持 9 种语言",
+      "admin.toggle":"管理员模式","admin.title":"添加新商品","admin.note":"上传照片，填写名称和价格后添加，立即显示在店铺中。","admin.fImg":"照片","admin.fName":"型号 / 名称","admin.fPrice":"价格（泰铢）","admin.fDesc":"简短描述","admin.addBtn":"添加商品",
+      "edit.toggle":"编辑网站","edit.on":"退出编辑","edit.save":"保存","edit.cancel":"取消","edit.hint":"编辑模式：点击带虚线框的文字即可修改，然后按保存（仅保存在本设备）。","edit.saved":"已保存！","edit.error":"保存失败。",
+      "a.down":"首付不能超过售价。","a.add":"请输入名称和价格。","a.del":"确定删除该商品吗？","admin.wrong":"密码错误。"
+    },
+    ko:{
+      "ticker":"✦ <b>빠른 수리 — 당일 완료</b> ✦ 중고폰 고가 매입 ✦ 우수 중고폰 판매 ✦ iCloud / Google / 화면 잠금 해제 ✦ 수리 전 견적",
+      "strip":"★ A 홍댕 모바일 ★ 수리 전 견적 ★ 빠른 수리 ★ 높은 매입가 ★",
+      "nav.services":"서비스","nav.shop":"중고폰","nav.why":"우리가게의 강점","nav.process":"폰 팔기","nav.reviews":"후기","nav.contact":"연락처","nav.line":"LINE 상담","nav.call":"전화 080-000-0000",
+      "hero.title":"액정 파손, 배터리 노화, 새 폰으로 교체 — 한 곳에서 해결",
+      "hero.lead":"모든 폰 수리, 중고폰 고가 매입, 우수 중고폰 판매, 잠금 해제. 모든 작업 전 묶인 점검과 견적.",
+      "hero.btnCall":"지금 전화하기","hero.btnServices":"모든 서비스 보기",
+      "hero.s1b":"10+년","hero.s1s":"수리 경력","hero.s2b":"당일 완료","hero.s2s":"일반 수리","hero.s3b":"수리 보증","hero.s3s":"정품급 부품",
+      "svc.eyebrow":"서비스 안내","svc.title":"휴어폰 걱정 한 곳에서 해결","svc.sub":"필요한 서비스를 선택하세요. 모든 작업은 점검과 견적 후 시작됩니다.",
+      "svc1.badge":"인기","svc1.name":"휴어폰 수리","svc1.desc":"액정, 배터리, 충전포트, 스피커, 마이크, 침메라 교체 (iPhone·Android).","svc1.l1":"정품급 부품","svc1.l2":"수리 보증","svc1.l3":"당일 수리","svc1.link":"예약 전화 →",
+      "svc2.name":"중고폰 매입","svc2.desc":"모든 상태 매입, 현장 현금 지급.","svc2.l1":"즉시 현금","svc2.l2":"공정한 가격","svc2.l3":"모든 상태","svc2.link":"견적 받기 →",
+      "svc3.name":"중고폰 판매","svc3.desc":"점검 완료 중고폰 + 액세서리.","svc3.l1":"판매 전 점검","svc3.l2":"매장 보증","svc3.link":"재고 보기 →",
+      "svc4.name":"잠금 해제 / 초기화","svc4.desc":"비밀번호 분실, iCloud·Google 잠금, SIM 잠금 해제.","svc4.l1":"iCloud·Google","svc4.l2":"SIM 잠금","svc4.link":"문의하기 →",
+      "shop.eyebrow":"중고 재고","shop.title":"폰 고르고 별점 주고 할부 계산까지","shop.sub":"별점을 누르거나 '이 폰 선택'으로 월 할부를 확인하세요.",
+      "shop.search":"폰 모델 검색...","sort.new":"정렬: 최신","sort.low":"가격: 낮은순","sort.high":"가격: 높은순","shop.empty":"상품이 없습니다.",
+      "phone.choose":"이 폰 선택 →","phone.delete":"삭제",
+      "calc.title":"할부 계산기","calc.sub":"폰 선택, 선수금과 개월 수 입력.",
+      "calc.phone":"선택한 폰","calc.price":"판매가(바트)","calc.down":"선수금(바트)","calc.months":"할부 기간","calc.btn":"월 할부 계산",
+      "calc.lPrice":"상품 가격","calc.lDown":"선수금","calc.lFin":"할부 금액","calc.lFee":"수수료(~5%)","calc.lMonthly":"월 납입","calc.lTotal":"총액",
+      "calc.note":"*예시 계산일 뿐 실제 금액은 매장 상담 시 안내.","months":"개월",
+      "mo3":"3개월","mo6":"6개월","mo10":"10개월","mo12":"12개월","mo24":"24개월",
+      "why.eyebrow":"우리가게의 강점","why.title":"정확한 수리, 투명한 거래","why.sub":"명확한 가격, 숨은 비용 없음.",
+      "why1.t":"수리 전 견적","why1.p":"점검 후 견적, 추가 비용 없음.","why2.t":"정품급 부품","why2.p":"품질 부품과 보증.","why3.t":"빠른 수리","why3.p":"대부분 당일 완료.","why4.t":"높은 매입가","why4.p":"공정 평가, 즉시 현금.","why5.t":"실제 해제 가능","why5.p":"모든 잠금 문제 해결.","why6.t":"친근한 가격","why6.p":"오랜 동네 가게, 입소문.",
+      "proc.eyebrow":"우리에게 팔기","proc.title":"3단계로 간편하게 현금 수령",
+      "proc1.t":"모델과 상태 알리기","proc1.p":"전화 또는 방문.","proc2.t":"묶인 점검","proc2.p":"현장 견적.","proc3.t":"즉시 현금","proc3.p":"합의 즉시 현금 수령.",
+      "rev.eyebrow":"고객 후기","rev.title":"단골 고객의 생생한 후기",
+      "rev1.p":"액정 깨짐 - 아침 맡기고 오후 수령. 견적 그대로.","rev1.w":"A씨, 단골",
+      "rev2.p":"중고폰 판매 - 빠른 점검, 생각보다 좋은 가격, 즉시 현금.","rev2.w":"B씨",
+      "rev3.p":"중고폰 비밀번호 분실 - 가게에서 잠금 해제.","rev3.w":"C씨",
+      "faq.eyebrow":"자주 묻는 질문","faq.title":"아직 궁금하신가요?",
+      "faq1.q":"수리는 얼마나 걸리나요?","faq1.a":"일반 수리는 대부분 당일 완료, 일부는 대기 가능.",
+      "faq2.q":"액정이 깨지거나 안 켜지는 폰도 사나요?","faq2.a":"네, 모든 상태 매입. 점검 후 견적.",
+      "faq3.q":"중고폰 보증이 있나요?","faq3.a":"네, 구매 시 안내드리는 매장 보증.",
+      "faq4.q":"iCloud/Google 잠금도 해제 가능한가요?","faq4.a":"케이스에 따라 다름. 매장 방문 상담 권장.",
+      "ct.eyebrow":"연락처","ct.title":"방문 또는 전화 문의",
+      "ct.addrLabel":"매장 주소","ct.addr":"000 예시로드, 구, 도 00000","ct.phoneLabel":"전화","ct.lineLabel":"LINE 공식","ct.btnCall":"지금 전화","ct.btnLine":"LINE 상담",
+      "ct.h1":"월–금","ct.h2":"토–일","ct.h3":"공휴일",
+      "banner.title":"수리, 판매, 잠금 해제 준비되셨나요?","banner.btnCall":"지금 전화","banner.btnLine":"LINE 상담",
+      "footer.left":"© 2026 A 홍댕 모바일 — 수리·매입·판매·잠금해제","footer.right":"GitHub Pages로 제작 · 9개 언어",
+      "admin.toggle":"관리자 모드","admin.title":"상품 추가","admin.note":"사진, 이름, 가격 입력 후 추가하면 즉시 표시됩니다.","admin.fImg":"사진","admin.fName":"모델 / 이름","admin.fPrice":"가격(바트)","admin.fDesc":"간단 설명","admin.addBtn":"상품 추가",
+      "edit.toggle":"웹사이트 편집","edit.on":"편집 종료","edit.save":"저장","edit.cancel":"취소","edit.hint":"편집 모드: 점선 상자 텍스트를 클릭해 수정 후 저장 (이 기기에만 저장).","edit.saved":"저장됨!","edit.error":"저장 실패.",
+      "a.down":"선수금이 가격보다 큽니다.","a.add":"이름과 가격을 입력하세요.","a.del":"이 상품을 삭제할까요?","admin.wrong":"비밀번호가 틀렸습니다."
+    },
+    ja:{
+      "ticker":"✦ <b>即日修理</b> ✦ 中古高価買取 ✦ 良品中古販売 ✦ iCloud / Google / ロック解除 ✦ 修理前の見積もり",
+      "strip":"★ Aホンダエン モバイル ★ 修理前の見積もり ★ 即日修理 ★ 高価買取 ★",
+      "nav.services":"サービス","nav.shop":"中古品","nav.why":"選ばれる理由","nav.process":"買取の流れ","nav.reviews":"口コミ","nav.contact":"お問い合わせ","nav.line":"LINE相談","nav.call":"電話 080-000-0000",
+      "hero.title":"画面割れ・バッテリー劣化・機種変更 — お店ひとつで解決",
+      "hero.lead":"あらゆる機種の修理・中古買取・良品中古販売・ロック解除。どの作業も事前に点検とお見積もり。",
+      "hero.btnCall":"今すぐ電話","hero.btnServices":"サービス一覧へ",
+      "hero.s1b":"10+年","hero.s1s":"修理実績","hero.s2b":"即日完了","hero.s2s":"一般的な修理","hero.s3b":"修理保証","hero.s3s":"高品質パーツ",
+      "svc.eyebrow":"サービス案内","svc.title":"スマホの悩みはこのお店ひとつで","svc.sub":"必要なサービスをお選びください。すべて点検とお見積もりの後に作業します。",
+      "svc1.badge":"人気","svc1.name":"スマホ修理","svc1.desc":"画面・バッテリー・充電口・スピーカー・マイク・カメラ交換（iPhone/Android）。","svc1.l1":"高品質パーツ","svc1.l2":"修理保証","svc1.l3":"即日修理","svc1.link":"電話で予約 →",
+      "svc2.name":"中古買取","svc2.desc":"どんな状態でも買取、即現金。","svc2.l1":"即現金","svc2.l2":"適正価格","svc2.l3":"すべての状態","svc2.link":"査定する →",
+      "svc3.name":"中古販売","svc3.desc":"点検済み中古端末＋アクセサリー。","svc3.l1":"販売前点検","svc3.l2":"店舗保証","svc3.link":"在庫を見る →",
+      "svc4.name":"ロック解除 / 初期化","svc4.desc":"パスワード忘れ、iCloud・Googleロック、SIMロック解除。","svc4.l1":"iCloud・Google","svc4.l2":"SIMロック","svc4.link":"相談する →",
+      "shop.eyebrow":"中古在庫","shop.title":"端末を選んで星を付け、分割試算も","shop.sub":"星で評価、または「この端末を選ぶ」で月々の支払いを確認。",
+      "shop.search":"端末を検索...","sort.new":"並び替え: 新着","sort.low":"価格: 安い順","sort.high":"価格: 高い順","shop.empty":"商品が見つかりません。",
+      "phone.choose":"この端末を選ぶ →","phone.delete":"削除",
+      "calc.title":"分割支払い試算","calc.sub":"端末を選び、頭金と回数を入力。",
+      "calc.phone":"選択中の端末","calc.price":"販売価格(バーツ)","calc.down":"頭金(バーツ)","calc.months":"分割回数","calc.btn":"月々を計算",
+      "calc.lPrice":"商品価格","calc.lDown":"頭金","calc.lFin":"分割金額","calc.lFee":"手数料(~5%)","calc.lMonthly":"月々の支払い","calc.lTotal":"合計",
+      "calc.note":"※あくまで概算です。実際は店舗でご確認ください。","months":"ヶ月",
+      "mo3":"3ヶ月","mo6":"6ヶ月","mo10":"10ヶ月","mo12":"12ヶ月","mo24":"24ヶ月",
+      "why.eyebrow":"選ばれる理由","why.title":"正確な修理、誠実な取引","why.sub":"料金は明確、 surprises なし。",
+      "why1.t":"修理前の見積もり","why1.p":"点検後に見積もり、追加料金なし。","why2.t":"高品質パーツ","why2.p":"品質パーツと保証。","why3.t":"即日修理","why3.p":"ほとんど当日完了。","why4.t":"高価買取","why4.p":"適正査定、即現金。","why5.t":"確実なロック解除","why5.p":"あらゆるロックに対応。","why6.t":"気軽な価格","why6.p":"地元の老舗、口コミで。",
+      "proc.eyebrow":"お店へ売る","proc.title":"3ステップで現金化",
+      "proc1.t":"機種と状態を伝える","proc1.p":"電話または来店。","proc2.t":"無料点検","proc2.p":"その場で査定。","proc3.t":"即現金","proc3.p":"合意すればその場で現金。",
+      "rev.eyebrow":"お客様の声","rev.title":"常連さんの声",
+      "rev1.p":"画面割れ - 朝預けて午後受取。見積もり通り。","rev1.w":"Aさん・常連",
+      "rev2.p":"中古売却 - 査定が速く、思ったより高値、即現金。","rev2.w":"Bさん",
+      "rev3.p":"パスワード忘れ - 店でロック解除してくれた。","rev3.w":"Cさん",
+      "faq.eyebrow":"よくある質問","faq.title":"まだ迷っていますか？",
+      "faq1.q":"修理はどのくらいかかりますか？","faq1.a":"一般的な修理はほぼ当日。一部はその場で。",
+      "faq2.q":"画面割れや起動しない端末も買取？","faq2.a":"はい、すべての状態。点検後に査定。",
+      "faq3.q":"中古端末に保証は？","faq3.a":"はい、購入時にお伝えする店舗保証付き。",
+      "faq4.q":"iCloud/Googleロックは解除できますか？","faq4.a":"ケース次第。持ち込みのご相談を。",
+      "ct.eyebrow":"お問い合わせ","ct.title":"ご来店かお電話で",
+      "ct.addrLabel":"店舗住所","ct.addr":"000 サンプル通り、区、県 00000","ct.phoneLabel":"電話","ct.lineLabel":"公式LINE","ct.btnCall":"今すぐ電話","ct.btnLine":"LINE相談",
+      "ct.h1":"月–金","ct.h2":"土–日","ct.h3":"祝日",
+      "banner.title":"修理・売却・ロック解除のご準備は？","banner.btnCall":"今すぐ電話","banner.btnLine":"LINE相談",
+      "footer.left":"© 2026 Aホンダエン モバイル — 修理·買取·販売·ロック解除","footer.right":"GitHub Pagesで構築 · 9言語対応",
+      "admin.toggle":"管理者モード","admin.title":"商品を追加","admin.note":"写真・名前・価格を入力して追加するとすぐ表示されます。","admin.fImg":"写真","admin.fName":"モデル / 名前","admin.fPrice":"価格(バーツ)","admin.fDesc":"簡単な説明","admin.addBtn":"商品を追加",
+      "edit.toggle":"サイトを編集","edit.on":"編集を終了","edit.save":"保存","edit.cancel":"キャンセル","edit.hint":"編集モード：点線枠のテキストをクリックして修正後、保存（この端末のみ保存）。","edit.saved":"保存しました！","edit.error":"保存に失敗しました。",
+      "a.down":"頭金が価格を超えています。","a.add":"名前と価格を入力してください。","a.del":"この商品を削除しますか？","admin.wrong":"パスワードが違います。"
+    },
+    my:{
+      "ticker":"✦ <b>အမြန် ပြုပြင် — နေ့တစ်နေ့မှာ ပြီးပြတ်</b> ✦ အသုံးပြုပြီးဖုန်းကို ဈေးကောင်းဖြင့် ဝယ်ယူ ✦ အရည်အသွေးကောင်းသော လက်သုံးဖုန်းများ ✦ iCloud / Google / မျက်နှာပြင် လော့ခ်ဖွင့် ✦ ပြုပြင်မှီ ဈေးပြ",
+      "strip":"★ အေဟုန်ဒေင် မိုဘိုင်း ★ ပြုပြင်မှီ ဈေးပြ ★ အမြန် ပြုပြင် ★ ဈေးကောင်းဝယ်ယူ ★",
+      "nav.services":"ဝန်ဆောင်မှုများ","nav.shop":"လက်သုံးဖုန်းများ","nav.why":"ဘာကြောင့် ကျွန်ုပ်တို့","nav.process":"ဖုန်းရောင်းရန်","nav.reviews":"သုံးသပ်ချက်","nav.contact":"ဆက်သွယ်ရန်","nav.line":"LINE ချက်တ်","nav.call":"080-000-0000 ခေါ်ပါ",
+      "hero.title":"မျက်နှာပြင် ကွဲခြင်း၊ ဘက်ထရီအားနည်းခြင်း၊ သို့မဟုတ် ဖုန်းအသစ် — ဆိုင်တစ်ဆိုင်တည်းမှာပဲ ပြီးပြတ်",
+      "hero.lead":"ဖုန်းအားလုံး ပြုပြင်၊ အသုံးပြုပြီးဖုန်းကို ဈေးကောင်းဖြင့် ဝယ်ယူ၊ အရည်အသွေးကောင်းသော လက်သုံးဖုန်းများ ရောင်းချ၊ လော့ခ်ဖွင့်ပေး။ အလုပ်စမှီ စစ်ဆေးပြီး ဈေးကို အရင်ပြ။",
+      "hero.btnCall":"အခုခေါ်ပါ","hero.btnServices":"ဝန်ဆောင်မှုအားလုံး ကြည့်ပါ",
+      "hero.s1b":"နှစ်ပေါင်း ၁၀+","hero.s1s":"ပြုပြင်မှုအတွေ့အကြုံ","hero.s2b":"နေ့တစ်နေ့မှာ","hero.s2s":"ပုံမှန် ပြုပြင်မှု","hero.s3b":"အလုပ်အာမခံ","hero.s3s":"အရည်အသွေးပစ္စည်း",
+      "svc.eyebrow":"ဝန်ဆောင်မှုများ","svc.title":"ဖုန်းပြဿနာအားလုံး ဆိုင်တစ်ဆိုင်တည်းမှာ","svc.sub":"လိုအပ်သည့်ဝန်ဆောင်မှုကို ရွေးပါ။ အလုပ်တိုင်း စစ်ဆေးပြီး ဈေးပြ၍ စတင်ပါတယ်။",
+      "svc1.badge":"လူကြိုက်များ","svc1.name":"ဖုန်း ပြုပြင်ခြင်း","svc1.desc":"မျက်နှာပြင်၊ ဘက်ထရီ၊ charging port၊ speaker၊ mic၊ camera ပြောင်းခြင်း (iPhone/Android)။","svc1.l1":"အရည်အသွေးပစ္စည်း","svc1.l2":"ပြုပြင်မှုအာမခံ","svc1.l3":"နေ့တစ်နေ့မှာ ပြီးပြတ်","svc1.link":"ခေါ်ပြီး မှာယူပါ →",
+      "svc2.name":"လက်သုံးဖုန်း ဝယ်ယူခြင်း","svc2.desc":"အခြေအနေမရွေး ဝယ်ယူ၊ ငွေသားချက်ချင်း။","svc2.l1":"ချက်ချင်းငွေသား","svc2.l2":"ဈေးတန်","svc2.l3":"အခြေအနေအားလုံး","svc2.link":"ဈေးမေးမြန်း →",
+      "svc3.name":"လက်သုံးဖုန်း ရောင်းချခြင်း","svc3.desc":"စစ်ဆေးပြီးသား ဖုန်းများ + ပစ္စည်းများ။","svc3.l1":"ရောင်းမီ စစ်ဆေး","svc3.l2":"ဆိုင်အာမခံ","svc3.link":"စတော့ကြည့်ပါ →",
+      "svc4.name":"လော့ခ်ဖွင့် / reset","svc4.desc":"စကားဝှက် မေ့ခြင်း၊ iCloud/Google လော့ခ်၊ SIM unlock။","svc4.l1":"iCloud/Google","svc4.l2":"SIM unlock","svc4.link":"မေးပါ →",
+      "shop.eyebrow":"လက်သုံးဖုန်းစတော့","shop.title":"ဖုန်းရွေး၊ ကြယ်ပေး၊ ငွေစဉ်တွက်ပါ","shop.sub":"ကြယ်နှိပ်၍ အဆင့်သတ်မှတ် သို့မဟုတ် \"ဒီဖုန်းရွေး\" ဖြင့် လစဉ်ပေးဆပ် ကြည့်ပါ။",
+      "shop.search":"ဖုန်းမော်ဒယ် ရှာပါ...","sort.new":"စဉ်: အသစ်ဆုံး","sort.low":"ဈေး: နိမ့် → မြင့်","sort.high":"ဈေး: မြင့် → နိမ့်","shop.empty":"ပစ္စည်းမတွေ့ပါ။",
+      "phone.choose":"ဒီဖုန်းရွေး →","phone.delete":"ဖျက်ပါ",
+      "calc.title":"ငွေစဉ် တွက်စက်","calc.sub":"ဖုန်းရွေး၊ down payment နဲ့ ကာလ ထည့်ပါ။",
+      "calc.phone":"ရွေးထားသော ဖုန်း","calc.price":"ဈေး (ဘတ်)","calc.down":"down payment (ဘတ်)","calc.months":"ကာလ","calc.btn":"တွက်ပါ",
+      "calc.lPrice":"ပစ္စည်းဈေး","calc.lDown":"down payment","calc.lFin":"ကျန်ငွေ","calc.lFee":"စရိတ် (~၅%)","calc.lMonthly":"လစဉ်","calc.lTotal":"စုစုပေါင်း",
+      "calc.note":"*ခန့်မှန်းချက်သာဖြစ်သည်။ တကယ့်ဈေး ဆိုင်မှာသိရမည်။","months":"လ",
+      "mo3":"လ ၃","mo6":"လ ၆","mo10":"လ ၁၀","mo12":"လ ၁၂","mo24":"လ ၂၄",
+      "why.eyebrow":"ဘာကြောင့် ကျွန်ုပ်တို့","why.title":"တိကျပြုပြင်၊ တရားမျှတစွာ ကုန်သွယ်","why.sub":"ဈေးရှင်းလင်း၊ အံ့သြစရာမရှိ။",
+      "why1.t":"ပြုပြင်မှီ ဈေးပြ","why1.p":"အရင်စစ်ပြီး ဈေးပြ၊ နောက်ထပ်မတိုးဘူး။","why2.t":"အရည်အသွေးပစ္စည်း","why2.p":"ပစ္စည်းကောင်းနဲ့ အာမခံ။","why3.t":"အမြန် ပြုပြင်","why3.p":"အများစု နေ့တစ်နေ့မှာ။","why4.t":"ဈေးကောင်းဝယ်ယူ","why4.p":"ဈေးတန်၊ ငွေသားချက်ချင်း။","why5.t":"လော့ခ်ဖွင့်နိုင်မှု","why5.p":"လော့ခ်ပြဿနာအားလုံး ဖြေရှင်း။","why6.t":"ဈေးသက်သာ","why6.p":"ဒေသိယဆိုင်၊ နှုတ်ကပ်ပြော။",
+      "proc.eyebrow":"ကျွန်ုပ်တို့ဆီ ရောင်းပါ","proc.title":"ခြောက်လုံး လေး၊ ငွေသားချက်ချင်း",
+      "proc1.t":"မော်ဒယ်နဲ့ အခြေအနေ ပြောပါ","proc1.p":"ခေါ်ပါ သို့ ဆိုင်လာပါ။","proc2.t":"အခမဲ့ စစ်ဆေး","proc2.p":"ဆိုင်မှာပဲ ဈေးပြ။","proc3.t":"ချက်ချင်း ငွေသား","proc3.p":"သဘောတူလျှင် ငွေသားယူပါ။",
+      "rev.eyebrow":"ဖောက်သည်သုံးသပ်ချက်","rev.title":"ပုံမှန်ဖောက်သည်များ ပြောကြားချက်",
+      "rev1.p":"မျက်နှာပြင် ကွဲ — မနက်ပိုင်း ပေးခဲ့၊ မွန်းလွဲပိုင်း ပြန်ရ။ ဈေးက စကားပြောတိုင်း။","rev1.w":"ကိုအဲ၊ ပုံမှန်ဖောက်သည်",
+      "rev2.p":"ဖုန်းစဟောင်းရောင်း — စစ်ဆေးမှု မြန်၊ ဈေးကောင်း၊ ငွေသားချက်ချင်း။","rev2.w":"ကိုဘီ",
+      "rev3.p":"စကားဝှက် မေ့ခဲ့ — ဆိုင်က လော့ခ်ဖွင့်ပေးခဲ့။","rev3.w":"ကိုစီ",
+      "faq.eyebrow":"နေ့စဉ်မေးမြန်းသောမေးခွန်း","faq.title":"အခုမှ မေးစရာရှိသေးလား?",
+      "faq1.q":"ပြုပြင်ရင် ကြာပါသလား?","faq1.a":"ပုံမှန် ပြုပြင်မှုများ နေ့တစ်နေ့မှာ ပြီးပါတယ်။ တစ်ချို့က ဆိုင်မှာ စောင့်နိုင်ပါတယ်။",
+      "faq2.q":"ကွဲသို့မဟုတ် မဖွင့်နိုင်တဲ့ ဖုန်းဝယ်လား?","faq2.a":"ဝယ်၊ အခြေအနေအားလုံး။ စစ်ဆေးပြီးဈေးပြ။",
+      "faq3.q":"လက်သုံးဖုန်းမှာ အာမခံရလား?","faq3.a":"ရ၊ ဆိုင်အာမခံ။",
+      "faq4.q":"iCloud/Google လော့ခ်ဖွင့်နိုင်လား?","faq4.a":"ကိစ္စပေါ်မူတည်။ ဆိုင်လာစစ်ဆေးပါ။",
+      "ct.eyebrow":"ဆက်သွယ်ရန်","ct.title":"လာပါ သို့မဟုတ် အရင်ခေါ်ပါ",
+      "ct.addrLabel":"ဆိုင်လိပ်စာ","ct.addr":"000 နမူနာလမ်း၊ မြို့နယ်၊ ပြည်နယ် 00000","ct.phoneLabel":"ဖုန်း","ct.lineLabel":"LINE","ct.btnCall":"အခုခေါ်ပါ","ct.btnLine":"LINE ချက်တ်",
+      "ct.h1":"တနင်္လာ–သောကြာ","ct.h2":"စနေ–တနင်္ဂနွေ","ct.h3":"ရုံးပိတ်ရက်",
+      "banner.title":"ပြုပြင်၊ ရောင်း၊ လော့ခ်ဖွင့်ဖို့ အဆင်သင့်ပဲလား?","banner.btnCall":"အခုခေါ်ပါ","banner.btnLine":"LINE",
+      "footer.left":"© 2026 အေဟုန်ဒေင် မိုဘိုင်း — ပြုပြင်·ဝယ်ယူ·ရောင်ချေ·လော့ခ်ဖွင့်","footer.right":"GitHub Pages ဖြင့် ဖန်တီး · ဘာသာစကား ၉ ခု",
+      "admin.toggle":"အက်မင်မုဒ်","admin.title":"ပစ္စည်းအသစ် ထည့်ပါ","admin.note":"ဓာတ်ပုံ၊ အမည်၊ ဈေးထည့်ပြီး ထည့်ပါ — ချက်ချင်းပေါ်ပါလိမ့်မယ်။","admin.fImg":"ဓာတ်ပုံ","admin.fName":"မော်ဒယ် / အမည်","admin.fPrice":"ဈေး (ဘတ်)","admin.fDesc":"အကျဉ်းချုပ်","admin.addBtn":"ပစ္စည်းထည့်ပါ",
+      "edit.toggle":"ဝဘ်ဆိုဒ် ပြင်ဆင်ပါ","edit.on":"ပြင်ဆင်မှု ထွက်ပါ","edit.save":"သိမ်းပါ","edit.cancel":"ပယ်ဖျက်ပါ","edit.hint":"ပြင်ဆင်မှုမုဒ် - ရေမျဉ်းကြောင်းနီးပါး စာသားကိုနှိပ်ပြီး ပြုပြင်ပြီး သိမ်းပါ (ဒီကိရိယာပေါ်တွင်သာ)။","edit.saved":"သိမ်းပြီးပါပြီ!","edit.error":"သိမ်းဆည်းမှု မအောင်မြင်ပါ။",
+      "a.down":"down payment ဈေးထက် ပိုနေသည်။","a.add":"အမည်နဲ့ ဈေးထည့်ပါ။","a.del":"ဒီပစ္စည်းဖျက်မလား?","admin.wrong":"စကားဝှက် မှားနေသည်။"
+    },
+    km:{
+      "ticker":"✦ <b>ជួសជុលរហ័ស — រួចក្នុងថ្ងៃតែមួយ</b> ✦ ទិញទូរស័ព្ទចាស់តម្លៃខ្ពស់ ✦ ទូរស័ព្ទមួយដៃគុណភាពល្អ ✦ ដោះសោ iCloud / Google / អេក្រលាន ✦ ប្រាប់តម្លៃមុនជួសជុល",
+      "strip":"★ អេ ហុងដាង ម៉ូបៃ ★ ប្រាប់តម្លៃមុនជួសជុល ★ ជួសជុលរហ័ស ★ ទិញតម្លៃខ្ពស់ ★",
+      "nav.services":"សេវាកម្ម","nav.shop":"ទូរស័ព្ទមួយដៃ","nav.why":"ហេតុអ្វីយើងខ្ញុំ","nav.process":"លក់ទូរស័ព្ទ","nav.reviews":"ការវាយតម្លៃ","nav.contact":"ទំនាក់ទំនង","nav.line":"ជជែក LINE","nav.call":"ទូរស័ព្ទ 080-000-0000",
+      "hero.title":"អេក្រលានបែក ថ្មខ្សោយ ឬចង់ប្ដូរទូរស័ព្ទ — រួចរាល់ក្នុងហាងតែមួយ",
+      "hero.lead":"ជួសជុលទូរស័ព្ទគ្រប់ម៉ូដែល ទិញទូរស័ព្ទចាស់តម្លៃខ្ពស់ លក់ទូរស័ព្ទមួយដៃគុណភាពល្អ និងដោះសោ។ ពិនិត្យ និងប្រាប់តម្លៃមុនគ្រប់ដំណើរការ។",
+      "hero.btnCall":"ទូរស័ព្ទឥឡូវ","hero.btnServices":"មើលសេវាកម្មទាំងអស់",
+      "hero.s1b":"១០+ ឆ្នាំ","hero.s1s":"បទពិសោធជួសជុល","hero.s2b":"ក្នុងថ្ងៃតែមួយ","hero.s2s":"ការជួសជុលសាមញ្ញ","hero.s3b":"មានការធានា","hero.s3s":"គ្រឿងបំពាក់គុណភាព",
+      "svc.eyebrow":"សេវាកម្មរបស់ហាង","svc.title":"បញ្ហាទូរស័ព្ទ ដោះស្រាយក្នុងហាងតែមួយ","svc.sub":"ជ្រើសសេវាតាមតម្រូវការ។ រាល់សេវាពិនិត្យ និងប្រាប់តម្លៃមុនជានិច្ច។",
+      "svc1.badge":"ពេញនិយម","svc1.name":"ជួសជុលទូរស័ព្ទ","svc1.desc":"ប្ដូរអេក្រលាន ថ្ម ផតសាក បាស មីក្រូ និងកាមេរ៉ា (iPhone/Android)។","svc1.l1":"គ្រឿងបំពាក់គុណភាព","svc1.l2":"ការធានាជួសជុល","svc1.l3":"រហ័សក្នុងថ្ងៃតែមួយ","svc1.link":"ទូរស័ព្ទកក់ →",
+      "svc2.name":"ទិញទូរស័ព្ទមួយដៃ","svc2.desc":"ទិញគ្រប់ស្ថានភាព ប្រាក់សុទ្ធភ្លាមៗ។","svc2.l1":"ប្រាក់ភ្លាមៗ","svc2.l2":"តម្លៃសមរម្យ","svc2.l3":"គ្រប់ស្ថានភាព","svc2.link":"សួរតម្លៃ →",
+      "svc3.name":"លក់ទូរស័ព្ទមួយដៃ","svc3.desc":"ទូរស័ព្ទពិនិត្យរួច + គ្រឿងបន្លាស់។","svc3.l1":"ពិនិត្យមុនលក់","svc3.l2":"ការធានាហាង","svc3.link":"មើលស្តុក →",
+      "svc4.name":"ដោះសោ / កំណត់ឡើងវិញ","svc4.desc":"ភ្លេចពាក្យសម្ងាត់ សោ iCloud/Google ដោះសោស៊ីម។","svc4.l1":"iCloud/Google","svc4.l2":"ដោះសោស៊ីម","svc4.link":"សួរករណីរបស់អ្នក →",
+      "shop.eyebrow":"ស្តុកមួយដៃ","shop.title":"ជ្រើសទូរស័ព្ទ ដាក់ផ្កាយ សាកបង់រំលោះ","shop.sub":"ចុចផ្កាយដើម្បីវាយតម្លៃ ឬចុច \"ជ្រើសទូរស័ព្ទនេះ\" មើលបង់ប្រចាំខែ។",
+      "shop.search":"ស្វែងរកម៉ូដែល...","sort.new":"តម្រៀប៖ ថ្មីបំផុត","sort.low":"តម្លៃ៖ ទាប → ខ្ពស់","sort.high":"តម្លៃ៖ ខ្ពស់ → ទាប","shop.empty":"រកមិនឃើញទំនិញ។",
+      "phone.choose":"ជ្រើសទូរស័ព្ទនេះ →","phone.delete":"លុប",
+      "calc.title":"គណនាបង់រំលោះ","calc.sub":"ជ្រើសទូរស័ព្ទ បញ្ចូលប្រាក់កក់ និងរយៈពេល។",
+      "calc.phone":"ទូរស័ព្ទបានជ្រើស","calc.price":"តម្លៃ (បាត)","calc.down":"ប្រាក់កក់ (បាត)","calc.months":"រយៈពេល","calc.btn":"គណនា",
+      "calc.lPrice":"តម្លៃទំនិញ","calc.lDown":"ប្រាក់កក់","calc.lFin":"ចំនួនខ្ចី","calc.lFee":"ថ្លៃសេវា (~៥%)","calc.lMonthly":"បង់ប្រចាំខែ","calc.lTotal":"សរុប",
+      "calc.note":"*គ្រាន់តែប៉ាន់ស្មាន។ តម្លៃពិតនៅហាង។","months":"ខែ",
+      "mo3":"៣ ខែ","mo6":"៦ ខែ","mo10":"១០ ខែ","mo12":"១២ ខែ","mo24":"២៤ ខែ",
+      "why.eyebrow":"ហេតុអ្វីយើងខ្ញុំ","why.title":"ជួសជុលត្រឹមត្រូវ ទិញលក់ត្រង់","why.sub":"តម្លៃច្បាស់ គ្មានភ្ញាក់ផ្អើល។",
+      "why1.t":"ប្រាប់តម្លៃមុនជួសជុល","why1.p":"ពិនិត្យ និងប្រាប់តម្លៃមុន គ្មានបន្ថែម។","why2.t":"គ្រឿងបំពាក់គុណភាព","why2.p":"គុណភាព និងការធានា។","why3.t":"ជួសជុលរហ័ស","why3.p":"ភាគច្រើនក្នុងថ្ងៃតែមួយ។","why4.t":"ទិញតម្លៃខ្ពស់","why4.p":"តម្លៃសមរម្យ ប្រាក់ភ្លាមៗ។","why5.t":"ដោះសោបានពិត","why5.p":"ដោះសោគ្រប់ករណី។","why6.t":"តម្លៃមិត្តភាព","why6.p":"ហាងប្រចាំមូលដ្ឋាន ប្រាប់គ្នាតៗ។",
+      "proc.eyebrow":"លក់ឱ្យយើងខ្ញុំ","proc.title":"៣ ជំហានងាយៗ ប្រាក់ភ្លាមៗ",
+      "proc1.t":"ប្រាប់ម៉ូដែល និងស្ថានភាព","proc1.p":"ទូរស័ព្ទ ឬមកហាង។","proc2.t":"ពិនិត្យឥតគិតថ្លៃ","proc2.p":"ប្រាប់តម្លៃនៅហាង។","proc3.t":"ប្រាក់ភ្លាមៗ","proc3.p":"ព្រមទេ? យកប្រាក់ត្រលប់។",
+      "rev.eyebrow":"សំឡេងពីអតិថិជន","rev.title":"អតិថិជនប្រចាំនិយាយយ៉ាងណា",
+      "rev1.p":"អេក្រលានបែក — ព្រឹកពាក់កណ្ដាល រសៀលយក។ តម្លៃត្រឹមត្រូវ។","rev1.w":"លោក អេ អតិថិជនប្រចាំ",
+      "rev2.p":"លក់ទូរស័ព្ទចាស់ — ពិនិត្យរហ័ស តម្លៃល្អជាងគំនិត ប្រាក់ភ្លាមៗ។","rev2.w":"លោក ប៊ី",
+      "rev3.p":"ភ្លេចពាក្យសម្ងាត់ — ហាងជួយដោះសោ។","rev3.w":"លោក ស៊ី",
+      "faq.eyebrow":"សំណួរដែលគេសួរញឹកញាប់","faq.title":"នៅសង្ស័យ? អានទីនេះសិន",
+      "faq1.q":"ជួសជុលចំណាយពេលប៉ុន្មាន?","faq1.a":"ជួសជុលសាមញ្ញភាគច្រើនរួចក្នុងថ្ងៃតែមួយ ខ្លះរង់ក្នុងហាង។",
+      "faq2.q":"ទិញទូរស័ព្ទបែក ឬបិទមិនចេះ?","faq2.a":"ទិញ គ្រប់ស្ថានភាព។ ពិនិត្យរួចប្រាប់តម្លៃ។",
+      "faq3.q":"ទូរស័ព្ទមួយដៃមានការធានាទេ?","faq3.a":"មាន ការធានាហាង។",
+      "faq4.q":"ដោះសោ iCloud/Google បានទេ?","faq4.a":"តាមករណី។ មកហាងពិនិត្យ។",
+      "ct.eyebrow":"ទំនាក់ទំនង","ct.title":"មកហាង ឬទូរស័ព្ទមុន",
+      "ct.addrLabel":"អាសយដ្ឋានហាង","ct.addr":"000 ផ្លូវគំរូ ខណ្ឌ ខេត្ត 00000","ct.phoneLabel":"ទូរស័ព្ទ","ct.lineLabel":"LINE","ct.btnCall":"ទូរស័ព្ទឥឡូវ","ct.btnLine":"ជជែក LINE",
+      "ct.h1":"ចន្ទ–សុក្រ","ct.h2":"សៅរ៍–អាទិត្យ","ct.h3":"ថ្ងៃឈប់សម្រាក",
+      "banner.title":"រួចរាល់សម្រាប់ជួសជុល លក់ ឬដោះសោ?","banner.btnCall":"ទូរស័ព្ទឥឡូវ","banner.btnLine":"LINE",
+      "footer.left":"© ២០២៦ អេ ហុងដាង ម៉ូបៃ — ជួសជុល·ទិញ·លក់·ដោះសោ","footer.right":"បង្កើតដោយ GitHub Pages · ៩ ភាសា",
+      "admin.toggle":"មុខងារអ្នកគ្រប់គ្រង","admin.title":"បន្ថែមទំនិញថ្មី","admin.note":"ផ្ទុករូបភាព ឈ្មោះ និងតម្លៃ រួចបន្ថែម — បង្ហាញភ្លាម។","admin.fImg":"រូបភាព","admin.fName":"ម៉ូដែល / ឈ្មោះ","admin.fPrice":"តម្លៃ (បាត)","admin.fDesc":"ព័ត៌មានសង្ខេប","admin.addBtn":"បន្ថែមទំនិញ",
+      "edit.toggle":"កែប្រែគេហទំព័រ","edit.on":"បិទការកែប្រែ","edit.save":"រក្សាទុក","edit.cancel":"បោះបង់","edit.hint":"មុខងារកែប្រែ៖ ចុចអក្សរដែលមានបន្ទាត់ខ្សែក្បូល កែរួចចុចរក្សាទុក (រក្សាក្នុងឧបករណ៍នេះប៉ុណ្ណោះ)។","edit.saved":"បានរក្សាទុក!","edit.error":"រក្សាទុកមិនបានសម្រេច។",
+      "a.down":"ប្រាក់កក់លើសតម្លៃ។","a.add":"សូមបញ្ចូលឈ្មោះ និងតម្លៃ។","a.del":"លុបទំនិញនេះ?","admin.wrong":"ពាក្យសម្ងាត់មិនត្រឹមត្រូវ។"
     }
   };
 
-  var baseContent = {};
+  var baseContent={};
   document.querySelectorAll('[data-i18n]').forEach(function(el){
-    baseContent[el.getAttribute('data-i18n')] = el.innerHTML;
+    baseContent[el.getAttribute('data-i18n')]=el.innerHTML;
   });
 
   function T(key){
-    if (CONTENT[key] != null) return CONTENT[key];
-    var dict = I18N[currentLang] || {};
-    if (dict[key] != null) return dict[key];
-    return baseContent[key] != null ? baseContent[key] : key;
+    if(CONTENT[key]!=null) return CONTENT[key];
+    var dict=I18N[currentLang]||{};
+    if(dict[key]!=null) return dict[key];
+    return baseContent[key]!=null?baseContent[key]:key;
   }
 
+  /* applyLang: safe — options use textContent, inputs use placeholder */
   function applyLang(lang){
-    currentLang = lang;
-    document.documentElement.lang = lang;
+    currentLang=lang;
+    document.documentElement.lang=lang;
     document.querySelectorAll('[data-i18n]').forEach(function(el){
-      var key = el.getAttribute('data-i18n');
-      el.innerHTML = T(key);
+      var key=el.getAttribute('data-i18n');
+      if(el.tagName==='OPTION'){ el.textContent=T(key); }
+      else{ el.innerHTML=T(key); }
     });
-    try { localStorage.setItem(LANG_KEY, lang); } catch(e) {}
-    var sel = document.getElementById('langSelect');
-    if (sel) sel.value = lang;
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+      el.placeholder=T(el.getAttribute('data-i18n-ph'));
+    });
+    try{ localStorage.setItem(LANG_KEY,lang); }catch(e){}
+    var sel=document.getElementById('langSelect');
+    if(sel) sel.value=lang;
     renderGrid();
   }
 
-  var langSel = document.getElementById('langSelect');
-  if (langSel) langSel.addEventListener('change', function(){ applyLang(langSel.value); });
+  var langSel=document.getElementById('langSelect');
+  if(langSel) langSel.addEventListener('change',function(){ applyLang(langSel.value); });
 
-  document.querySelector('.burger').addEventListener('click', function(){
-    var links = document.querySelector('.nav-links');
-    var isOpen = links.style.display === 'flex';
-    links.style.display = isOpen ? 'none' : 'flex';
-    links.style.flexDirection = 'column';
-    links.style.position = 'absolute';
-    links.style.top = '78px';
-    links.style.left = '0';
-    links.style.right = '0';
-    links.style.background = 'var(--cream)';
-    links.style.padding = '20px 24px';
-    links.style.borderBottom = '1px solid var(--line)';
-    links.style.gap = '16px';
+  /* Burger */
+  document.querySelector('.burger').addEventListener('click',function(){
+    var links=document.querySelector('.nav-links');
+    var isOpen=links.style.display==='flex';
+    links.style.display=isOpen?'none':'flex';
+    links.style.flexDirection='column';
+    links.style.position='absolute';
+    links.style.top='76px'; links.style.left='0'; links.style.right='0';
+    links.style.background='var(--bg)'; links.style.padding='20px 24px';
+    links.style.borderBottom='1px solid var(--line)'; links.style.gap='16px';
   });
 
+  /* Reveal on scroll */
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  },{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* Back to top */
+  var backTop=document.getElementById('backTop');
+  window.addEventListener('scroll',function(){
+    backTop.classList.toggle('show',window.scrollY>500);
+  });
+  backTop.addEventListener('click',function(){ window.scrollTo({top:0,behavior:'smooth'}); });
+
+  /* ===== Phones data ===== */
   function placeholderSvg(color){
-    return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="'+color+'"/><rect x="70" y="28" width="60" height="144" rx="10" fill="rgba(255,255,255,0.88)"/><circle cx="100" cy="152" r="4" fill="'+color+'"/></svg>');
+    return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="'+color+'"/><rect x="70" y="28" width="60" height="144" rx="10" fill="rgba(255,255,255,0.88)"/><circle cx="100" cy="152" r="4" fill="'+color+'"/></svg>');
   }
-
-  var seedPhones = [
-    { id: 'seed-1', name: 'iPhone 12 128GB', price: 8900, desc: 'สภาพดี แบต 88%', img: placeholderSvg('#2E6E63') },
-    { id: 'seed-2', name: 'iPhone 13 128GB', price: 12900, desc: 'สภาพสวย ไม่มีรอย', img: placeholderSvg('#C6362B') },
-    { id: 'seed-3', name: 'Samsung A54 128GB', price: 6900, desc: 'ใช้งานน้อย', img: placeholderSvg('#EFA92E') },
-    { id: 'seed-4', name: 'iPhone 11 64GB', price: 5500, desc: 'จอมีรอยเล็กน้อย', img: placeholderSvg('#241A16') }
+  var seedPhones=[
+    {id:'seed-1',name:'iPhone 12 128GB',price:8900,desc:'สภาพดี แบต 88%',img:placeholderSvg('#2E6E63')},
+    {id:'seed-2',name:'iPhone 13 128GB',price:12900,desc:'สภาพสวย ไม่มีรอย',img:placeholderSvg('#C6362B')},
+    {id:'seed-3',name:'Samsung A54 128GB',price:6900,desc:'ใช้งานน้อย',img:placeholderSvg('#EFA92E')},
+    {id:'seed-4',name:'iPhone 11 64GB',price:5500,desc:'จอมีรอยเล็กน้อย',img:placeholderSvg('#241A16')}
   ];
-
   function loadPhones(){
-    try{
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if(raw) return JSON.parse(raw);
-    }catch(e){}
-    savePhones(seedPhones);
-    return seedPhones.slice();
+    try{ var raw=localStorage.getItem(STORAGE_KEY); if(raw) return JSON.parse(raw); }catch(e){}
+    savePhones(seedPhones); return seedPhones.slice();
   }
-  function savePhones(list){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }catch(e){} }
+  function savePhones(list){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(list)); }catch(e){} }
   function loadRatings(){ try{ var r=localStorage.getItem(RATING_KEY); if(r) return JSON.parse(r); }catch(e){} return {}; }
-  function saveRatings(o){ try{ localStorage.setItem(RATING_KEY, JSON.stringify(o)); }catch(e){} }
+  function saveRatings(o){ try{ localStorage.setItem(RATING_KEY,JSON.stringify(o)); }catch(e){} }
 
-  var phones = loadPhones();
-  var ratings = loadRatings();
-  var grid = document.getElementById('phoneGrid');
-  var calcPhoneSel = document.getElementById('calcPhone');
-  var calcPriceInput = document.getElementById('calcPrice');
+  var phones=loadPhones();
+  var ratings=loadRatings();
+  var grid=document.getElementById('phoneGrid');
+  var emptyMsg=document.getElementById('shopEmpty');
+  var calcPhoneSel=document.getElementById('calcPhone');
+  var calcPriceInput=document.getElementById('calcPrice');
+  var searchInput=document.getElementById('shopSearch');
+  var sortSel=document.getElementById('shopSort');
 
   function money(n){ return Math.round(n).toLocaleString('th-TH'); }
 
-  function renderStars(container, id, value){
-    container.innerHTML = '';
+  function visiblePhones(){
+    var q=(searchInput.value||'').trim().toLowerCase();
+    var list=phones.filter(function(p){
+      return !q || (p.name+' '+(p.desc||'')).toLowerCase().indexOf(q)!==-1;
+    });
+    var s=sortSel.value;
+    if(s==='low') list=list.slice().sort(function(a,b){return a.price-b.price;});
+    else if(s==='high') list=list.slice().sort(function(a,b){return b.price-a.price;});
+    return list;
+  }
+
+  function renderStars(container,id,value){
+    container.innerHTML='';
     for(var i=1;i<=5;i++){
       var s=document.createElement('span');
       s.textContent='★';
@@ -800,21 +1255,20 @@
     if(!grid) return;
     grid.innerHTML='';
     calcPhoneSel.innerHTML='';
-    phones.forEach(function(p){
+    var list=visiblePhones();
+    emptyMsg.style.display=list.length?'none':'block';
+    list.forEach(function(p){
       var card=document.createElement('div');
       card.className='phone-card';
-      var imgWrap=document.createElement('div');
-      imgWrap.className='phone-card-img';
-      var img=document.createElement('img');
-      img.src=p.img; img.alt=p.name;
+      var imgWrap=document.createElement('div'); imgWrap.className='phone-card-img';
+      var img=document.createElement('img'); img.src=p.img; img.alt=p.name;
       imgWrap.appendChild(img);
-      var body=document.createElement('div');
-      body.className='phone-card-body';
+      var body=document.createElement('div'); body.className='phone-card-body';
       var h3=document.createElement('h3'); h3.textContent=p.name;
       var desc=document.createElement('p'); desc.className='desc'; desc.textContent=p.desc||'';
       var price=document.createElement('div'); price.className='price'; price.textContent=money(p.price)+' บาท';
       var starWrap=document.createElement('div'); starWrap.className='star-rate';
-      renderStars(starWrap, p.id, ratings[p.id]||0);
+      renderStars(starWrap,p.id,ratings[p.id]||0);
       var actions=document.createElement('div'); actions.className='phone-card-actions';
       var chooseBtn=document.createElement('button');
       chooseBtn.type='button'; chooseBtn.className='btn btn-ghost btn-sm';
@@ -827,10 +1281,7 @@
       delBtn.type='button'; delBtn.className='btn-admin-del';
       delBtn.textContent=T('phone.delete');
       delBtn.addEventListener('click',function(){
-        if(confirm(T('a.del'))){
-          phones=phones.filter(function(x){return x.id!==p.id;});
-          savePhones(phones); renderGrid();
-        }
+        if(confirm(T('a.del'))){ phones=phones.filter(function(x){return x.id!==p.id;}); savePhones(phones); renderGrid(); }
       });
       actions.appendChild(chooseBtn); actions.appendChild(delBtn);
       body.appendChild(h3); body.appendChild(desc); body.appendChild(price);
@@ -841,20 +1292,23 @@
       opt.value=p.id; opt.textContent=p.name+' - '+money(p.price)+' บาท';
       calcPhoneSel.appendChild(opt);
     });
-    if(phones.length) calcPriceInput.value=phones[0].price;
+    if(list.length) calcPriceInput.value=list[0].price;
   }
+
+  if(searchInput) searchInput.addEventListener('input',renderGrid);
+  if(sortSel) sortSel.addEventListener('change',renderGrid);
 
   calcPhoneSel.addEventListener('change',function(){
     var f=phones.filter(function(p){return p.id===calcPhoneSel.value;})[0];
     if(f) calcPriceInput.value=f.price;
   });
 
-  document.getElementById('calcBtn').addEventListener('click',function(){
+  function doCalc(){
     var price=parseFloat(calcPriceInput.value)||0;
     var downInput=document.getElementById('calcDown');
     var down=parseFloat(downInput.value)||0;
     var months=parseInt(document.getElementById('calcMonths').value,10)||10;
-    if(down>price){ alert(T('a.down')); down=price; downInput.value=down; }
+    if(down>price){ toast(T('a.down')); down=price; downInput.value=down; }
     if(down<0){ down=0; downInput.value=0; }
     var financed=Math.max(price-down,0);
     var fee=financed*0.05;
@@ -870,15 +1324,27 @@
       '<div class="row"><span>'+T('calc.lFee')+'</span><b>'+money(fee)+'</b></div>'+
       '<div class="row"><span>'+T('calc.lMonthly')+' ('+months+' '+T('months')+')</span><b>'+money(monthly)+'</b></div>'+
       '<div class="row total"><span>'+T('calc.lTotal')+'</span><b>'+money(grand)+'</b></div>';
-  });
+  }
+  document.getElementById('calcBtn').addEventListener('click',doCalc);
+  document.getElementById('calcDown').addEventListener('change',doCalc);
+  document.getElementById('calcMonths').addEventListener('change',doCalc);
 
+  /* ===== Admin auth ===== */
   function getPass(){
     var pass=null;
     try{ pass=sessionStorage.getItem(PASS_KEY); }catch(e){}
     if(!pass){ pass=prompt('ใส่รหัสผ่านแอดมิน:\n(ค่าเริ่มต้น: admin1234)'); if(pass===null) return null; }
     return pass;
   }
+  function verifyPass(){
+    var pass=getPass();
+    if(pass===null) return false;
+    if(pass!==ADMIN_PASS){ toast(T('admin.wrong')); return false; }
+    try{ sessionStorage.setItem(PASS_KEY,pass); }catch(e){}
+    return true;
+  }
 
+  /* ===== Admin mode (add/delete products) ===== */
   var adminToggle=document.getElementById('adminToggle');
   adminToggle.addEventListener('click',function(){
     var isAdmin=document.body.classList.contains('admin-mode');
@@ -887,31 +1353,18 @@
       adminToggle.textContent=T('admin.toggle');
       return;
     }
-    var pass=getPass();
-    if(pass===null) return;
-    if(pass!==ADMIN_PASS){
-      alert(T('admin.wrong'));
-      return;
-    }
-    try{ sessionStorage.setItem(PASS_KEY, pass); }catch(e){}
+    if(!verifyPass()) return;
     document.body.classList.add('admin-mode');
-    adminToggle.textContent='ออกจากโหมดแอดมิน';
+    adminToggle.textContent=T('edit.on');
   });
 
   var pImage=document.getElementById('pImage');
   var pImgPreview=document.getElementById('pImgPreview');
   var pendingImg='';
   pImage.addEventListener('change',function(){
-    var file=pImage.files[0];
-    if(!file) return;
+    var file=pImage.files[0]; if(!file) return;
     var reader=new FileReader();
-    reader.onload=function(e){
-      pendingImg=e.target.result;
-      pImgPreview.innerHTML='';
-      var img=document.createElement('img');
-      img.src=pendingImg;
-      pImgPreview.appendChild(img);
-    };
+    reader.onload=function(e){ pendingImg=e.target.result; pImgPreview.innerHTML=''; var img=document.createElement('img'); img.src=pendingImg; pImgPreview.appendChild(img); };
     reader.readAsDataURL(file);
   });
 
@@ -919,17 +1372,27 @@
     var name=document.getElementById('pName').value.trim();
     var price=parseFloat(document.getElementById('pPrice').value);
     var desc=document.getElementById('pDesc').value.trim();
-    if(!name||!price){ alert(T('a.add')); return; }
+    if(!name||!price){ toast(T('a.add')); return; }
     phones.push({id:'p-'+Date.now(),name:name,price:price,desc:desc,img:pendingImg||placeholderSvg('#2E6E63')});
     savePhones(phones); renderGrid();
     document.getElementById('pName').value='';
     document.getElementById('pPrice').value='';
     document.getElementById('pDesc').value='';
     pImage.value=''; pImgPreview.innerHTML=''; pendingImg='';
+    toast(T('edit.saved'));
   });
 
+  /* ===== Edit mode (FIXED) ===== */
   var editToggle=document.getElementById('editToggle');
   var editSnapshot=null;
+
+  function editableNodes(){
+    return Array.prototype.filter.call(document.querySelectorAll('[data-i18n]'),function(el){
+      if(el.closest('select')) return false;              /* skip <option> inside <select> */
+      if(el.tagName==='SELECT') return false;
+      return true;
+    });
+  }
 
   function collectContent(){
     var map={};
@@ -937,50 +1400,55 @@
     return map;
   }
 
+  /* block navigation/clicks while editing */
+  document.addEventListener('click',function(e){
+    if(!document.body.classList.contains('edit-mode')) return;
+    var t=e.target;
+    if(t.closest && t.closest('.edit-bar')) return;
+    if(t.closest && (t.closest('a')||t.closest('button')||t.closest('.star-rate')||t.closest('select')||t.closest('input'))){
+      e.preventDefault(); e.stopPropagation();
+    }
+  },true);
+
   editToggle.addEventListener('click',function(){
     var isEdit=document.body.classList.contains('edit-mode');
-    if(isEdit){
-      document.body.classList.remove('edit-mode');
-      document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
-      editToggle.textContent=T('edit.toggle');
-      return;
-    }
-    var pass=getPass();
-    if(pass===null) return;
-    if(pass!==ADMIN_PASS){
-      alert(T('admin.wrong'));
-      return;
-    }
+    if(isEdit){ exitEditMode(false); return; }
+    if(!verifyPass()) return;
     startEditMode();
   });
 
   function startEditMode(){
     editSnapshot=collectContent();
     document.body.classList.add('edit-mode');
-    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='true';});
+    editableNodes().forEach(function(el){
+      try{ el.contentEditable='plaintext-only'; }catch(err){ el.contentEditable='true'; }
+    });
     editToggle.textContent=T('edit.on');
+    toast(T('edit.hint'));
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  document.getElementById('editSave').addEventListener('click',function(){
-    CONTENT=collectContent();
-    try{ localStorage.setItem(CONTENT_KEY, JSON.stringify(CONTENT)); }catch(e){}
-    alert(T('edit.saved'));
-    document.body.classList.remove('edit-mode');
-    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
-    editToggle.textContent=T('edit.toggle');
-  });
-
-  document.getElementById('editCancel').addEventListener('click',function(){
-    if(editSnapshot){
+  function exitEditMode(restore){
+    if(restore && editSnapshot){
       document.querySelectorAll('[data-i18n]').forEach(function(el){
         var key=el.getAttribute('data-i18n');
         if(editSnapshot[key]!=null) el.innerHTML=editSnapshot[key];
       });
     }
     document.body.classList.remove('edit-mode');
-    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
+    editableNodes().forEach(function(el){ el.contentEditable='false'; });
     editToggle.textContent=T('edit.toggle');
+  }
+
+  document.getElementById('editSave').addEventListener('click',function(){
+    CONTENT=collectContent();
+    try{ localStorage.setItem(CONTENT_KEY,JSON.stringify(CONTENT)); toast(T('edit.saved')); }
+    catch(e){ toast(T('edit.error')); }
+    exitEditMode(false);
+  });
+
+  document.getElementById('editCancel').addEventListener('click',function(){
+    exitEditMode(true);
   });
 
   applyLang(currentLang);
