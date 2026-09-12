@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>เอ ฮ่องแดง โทรศัพท์ | ซ่อม รับซื้อ ขาย ปลดล็อกโทรศัพท์มือถือ</title>
+<meta name="description" content="ร้านเอ ฮ่องแดง โทรศัพท์ บริการซ่อมโทรศัพท์ รับซื้อโทรศัพท์มือสอง ขายเครื่องมือสอง และปลดล็อกเครื่อง ราคาเป็นกันเอง ซ่อมไว" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF2E4;
+    --cream-dim:#F3E7D4;
+    --ink:#241A16;
+    --red:#C6362B;
+    --red-deep:#98241C;
+    --gold:#EFA92E;
+    --teal:#2E6E63;
+    --line: rgba(36,26,22,0.16);
+    --radius: 4px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Sarabun', sans-serif;
+    color:var(--ink);
+    background:var(--cream);
+    line-height:1.65;
+    font-size:16px;
+  }
+  h1,h2,h3,.brand,.pill-num{
+    font-family:'Bai Jamjuree', sans-serif;
+  }
+  a{color:inherit; text-decoration:none;}
+  img,svg{display:block; max-width:100%;}
+  .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
+  ::selection{background:var(--gold); color:var(--ink);}
+
+  /* Language switcher */
+  .lang-select{
+    padding:10px 12px; border:2px solid var(--ink); border-radius:999px;
+    background:var(--cream); font-family:inherit; font-weight:600; font-size:13.5px;
+    color:var(--ink); cursor:pointer; max-width:130px;
+  }
+
+  /* Admin edit mode */
+  body.edit-mode [data-i18n]{
+    outline:2px dashed var(--gold); outline-offset:2px;
+    cursor:text; background:rgba(239,169,46,0.07); min-height:1em;
+  }
+  .edit-bar{
+    display:none; position:fixed; bottom:0; left:0; right:0; z-index:99;
+    background:var(--ink); color:var(--cream); padding:12px 20px;
+    align-items:center; justify-content:center; gap:14px; flex-wrap:wrap;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.35);
+  }
+  body.edit-mode .edit-bar{display:flex;}
+  .edit-bar span{font-size:13.5px; color:var(--gold); font-weight:600;}
+  .edit-bar button{
+    padding:9px 20px; border-radius:999px; border:none; cursor:pointer;
+    font-family:inherit; font-weight:700; font-size:14px;
+  }
+  #editSave{background:var(--gold); color:var(--ink);}
+  #editCancel{background:transparent; color:var(--cream); border:1px solid rgba(251,242,228,0.5) !important;}
+  body.edit-mode{padding-bottom:70px;}
+
+  /* Marquee ticker */
+  .ticker{
+    background:var(--ink); color:var(--cream); overflow:hidden;
+    white-space:nowrap; border-bottom:3px solid var(--gold);
+  }
+  .ticker-track{
+    display:inline-flex; gap:36px; padding:9px 0; font-size:13.5px; font-weight:600;
+    animation:scroll 32s linear infinite;
+  }
+  .ticker-track span{display:inline-flex; align-items:center; gap:36px; white-space:nowrap;}
+  .ticker-track b{color:var(--gold); font-weight:600;}
+  @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+  [dir="rtl"] .ticker-track{animation-name:scroll-rtl;}
+  @keyframes scroll-rtl{ from{transform:translateX(0);} to{transform:translateX(50%);} }
+  @media (prefers-reduced-motion: reduce){ .ticker-track{animation:none;} }
+
+  /* Header */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:var(--cream); border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex; align-items:center; justify-content:space-between; height:78px; gap:12px;}
+  .brand{font-size:21px; font-weight:700; display:flex; align-items:center; gap:10px;}
+  .brand .mark{
+    width:34px; height:34px; border-radius:50%; background:var(--red); color:var(--cream);
+    display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700;
+    flex:none;
+  }
+  .brand small{display:block; font-size:11px; font-weight:500; color:var(--teal); font-family:'Sarabun',sans-serif;}
+  .nav-links{display:flex; gap:30px; font-weight:600; font-size:15px;}
+  .nav-links a:hover{color:var(--red);}
+  .nav-actions{display:flex; gap:10px; align-items:center;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:12px 22px;
+    font-weight:700; font-size:14.5px; border-radius:999px; border:2px solid transparent;
+    white-space:nowrap; cursor:pointer;
+  }
+  .btn-red{background:var(--red); color:var(--cream); border-color:var(--red);}
+  .btn-red:hover{background:var(--red-deep); border-color:var(--red-deep);}
+  .btn-ghost{border-color:var(--ink); color:var(--ink);}
+  .btn-ghost:hover{background:var(--ink); color:var(--cream);}
+  .btn-line{background:#06C755; color:#fff; border-color:#06C755;}
+  .burger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
+  .burger span{width:26px; height:2px; background:var(--ink);}
+
+  /* Hero */
+  .hero{position:relative; overflow:hidden;}
+  .hero-inner{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:40px;
+    align-items:center; padding:64px 0 56px;
+  }
+  .sign{
+    background:var(--red); color:var(--cream); border-radius:18px;
+    padding:44px 40px; position:relative; box-shadow:0 14px 0 var(--red-deep);
+  }
+  .sign::before{
+    content:"เปิดร้าน 09:00–20:00 ทุกวัน"; position:absolute; top:-14px; left:32px;
+    background:var(--gold); color:var(--ink); font-weight:700; font-size:12.5px;
+    padding:6px 14px; border-radius:999px;
+  }
+  .sign h1{font-size:38px; line-height:1.32; font-weight:700; max-width:520px;}
+  .sign p.lead{margin-top:18px; font-size:16px; color:rgba(251,242,228,0.88); max-width:460px;}
+  .hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
+  .sign .btn-ghost{border-color:rgba(251,242,228,0.5); color:var(--cream);}
+  .sign .btn-ghost:hover{background:var(--cream); color:var(--red); border-color:var(--cream);}
+
+  .phone-art{position:relative; display:flex; justify-content:center;}
+  .phone-shell{
+    width:210px; height:420px; border-radius:30px; background:var(--ink); position:relative;
+    box-shadow:0 20px 0 rgba(36,26,22,0.14);
+  }
+  .phone-shell::before{
+    content:""; position:absolute; inset:12px; border-radius:20px;
+    background:linear-gradient(160deg, var(--teal), #1c443d);
+  }
+  .phone-shell .notch{position:absolute; top:24px; left:50%; transform:translateX(-50%); width:56px; height:8px; border-radius:6px; background:var(--ink); z-index:2;}
+  .crack{position:absolute; top:40%; left:24%; width:52%; height:2px; background:var(--gold); transform:rotate(20deg); z-index:2;}
+  .crack::before{content:""; position:absolute; left:20%; top:-16px; width:2px; height:32px; background:var(--gold); transform:rotate(-32deg);}
+  .crack::after{content:""; position:absolute; left:60%; top:-12px; width:2px; height:24px; background:var(--gold); transform:rotate(42deg);}
+  .wrench{position:absolute; bottom:-14px; right:-6px; width:70px; height:70px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 0 #c98d1f;}
+
+  .hero-stats{display:flex; gap:0; margin-top:30px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:0;}
+  .hero-stats div{padding:18px 26px 0 0; border-right:1px solid var(--line); margin-right:26px;}
+  .hero-stats div:last-child{border-right:none;}
+  .hero-stats b{display:block; font-size:26px; font-family:'Bai Jamjuree',sans-serif; color:var(--red);}
+  .hero-stats span{font-size:13px; color:rgba(36,26,22,0.65);}
+
+  /* Section shell */
+  section{padding:78px 0;}
+  .section-head{max-width:600px; margin-bottom:44px;}
+  .eyebrow{color:var(--red); font-weight:700; font-size:14px; margin-bottom:8px;}
+  .section-head h2{font-size:29px; font-weight:700;}
+  .section-head p{margin-top:12px; color:rgba(36,26,22,0.7); font-size:15.5px;}
+
+  /* Services */
+  .service-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+  .service-card{
+    background:var(--cream-dim); border:1px solid var(--line); border-radius:14px;
+    padding:26px 22px; position:relative;
+  }
+  .service-card.featured{background:var(--red); color:var(--cream); border-color:var(--red);}
+  .service-card .badge{
+    position:absolute; top:-11px; right:16px; background:var(--gold); color:var(--ink);
+    font-size:11.5px; font-weight:700; padding:4px 11px; border-radius:999px;
+  }
+  .service-card .icon{
+    width:44px; height:44px; border-radius:10px; background:var(--ink); color:var(--cream);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .service-card.featured .icon{background:var(--gold); color:var(--ink);}
+  .service-card h3{font-size:18px; font-weight:700; margin-bottom:6px;}
+  .service-card p{font-size:14px; opacity:0.82; margin-bottom:14px;}
+  .service-card ul{list-style:none; font-size:13.5px; display:flex; flex-direction:column; gap:6px; margin-bottom:16px;}
+  .service-card ul li::before{content:"✓ "; font-weight:700; color:var(--teal);}
+  .service-card.featured ul li::before{color:var(--gold);}
+  .service-card a{font-weight:700; font-size:14px; color:var(--red);}
+  .service-card.featured a{color:var(--cream); text-decoration:underline;}
+
+  /* Shop */
+  .shop-topbar{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap; margin-bottom:26px;}
+  .admin-toggle-btn{font-size:13px; padding:10px 18px;}
+  .admin-form{display:none; background:var(--cream-dim); border:1px dashed var(--line); border-radius:12px; padding:24px; margin-bottom:28px;}
+  body.admin-mode .admin-form{display:block;}
+  .admin-form h3{font-size:16px; font-weight:700; margin-bottom:14px;}
+  .admin-form-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:16px;}
+  .admin-form label{display:flex; flex-direction:column; gap:6px; font-size:13.5px; font-weight:600;}
+  .admin-form input{padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-family:inherit; font-size:14px; background:var(--cream); color:var(--ink);}
+  #pImgPreview img{width:76px; height:76px; object-fit:cover; border-radius:8px; margin-top:4px; border:1px solid var(--line);}
+  .admin-note{font-size:12.5px; color:rgba(36,26,22,0.6); margin-top:-6px; margin-bottom:16px;}
+
+  .phone-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:48px;}
+  .phone-card{background:var(--cream-dim); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+  .phone-card-img{aspect-ratio:1/1; background:var(--cream); display:flex; align-items:center; justify-content:center; overflow:hidden;}
+  .phone-card-img img{width:100%; height:100%; object-fit:cover;}
+  .phone-card-body{padding:16px; display:flex; flex-direction:column; gap:8px; flex:1;}
+  .phone-card h3{font-size:15.5px; font-weight:700;}
+  .phone-card .desc{font-size:13px; color:rgba(36,26,22,0.65); flex:1;}
+  .phone-card .price{font-family:'Bai Jamjuree',sans-serif; font-size:19px; font-weight:700; color:var(--red);}
+  .star-rate{display:flex; gap:2px;}
+  .star-rate span{font-size:17px; color:rgba(36,26,22,0.25); cursor:pointer;}
+  .star-rate span.filled{color:var(--gold);}
+  .phone-card-actions{display:flex; flex-direction:column; gap:8px; margin-top:6px;}
+  .btn-sm{padding:9px 14px; font-size:13px; width:100%; justify-content:center;}
+  .btn-admin-del{display:none; background:none; border:1px solid var(--red); color:var(--red); border-radius:999px; padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer; width:100%; justify-content:center;}
+  body.admin-mode .btn-admin-del{display:inline-flex;}
+
+  .calc-card{background:var(--ink); color:var(--cream); border-radius:18px; padding:36px;}
+  .calc-card h3{font-size:21px; font-weight:700; margin-bottom:8px;}
+  .calc-sub{font-size:14px; color:rgba(251,242,228,0.72); margin-bottom:22px; max-width:520px;}
+  .calc-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:18px;}
+  .calc-grid label{display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:600;}
+  .calc-grid input, .calc-grid select{padding:10px 12px; border-radius:8px; border:1px solid rgba(251,242,228,0.3); background:rgba(251,242,228,0.08); color:var(--cream); font-family:inherit; font-size:14px;}
+  .calc-grid input[readonly]{opacity:0.75;}
+  .calc-grid option{color:var(--ink);}
+  .calc-result{margin-top:22px; background:rgba(251,242,228,0.08); border-radius:12px; padding:22px; display:grid; grid-template-columns:repeat(2,1fr); gap:12px 24px;}
+  .calc-result .row{display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid rgba(251,242,228,0.14); padding-bottom:8px; font-size:14.5px;}
+  .calc-result .row b{color:var(--gold); white-space:nowrap;}
+  .calc-result .row.total{grid-column:1/-1; font-size:17px; font-weight:700; border-bottom:none; padding-top:6px;}
+  .calc-note{margin-top:16px; font-size:12.5px; color:rgba(251,242,228,0.55);}
+
+  /* Why us */
+  .why{background:var(--ink); color:var(--cream);}
+  .why .section-head h2{color:var(--cream);}
+  .why .eyebrow{color:var(--gold);}
+  .why .section-head p{color:rgba(251,242,228,0.72);}
+  .why-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  .why-item{border:1px solid rgba(251,242,228,0.16); border-radius:12px; padding:26px;}
+  .why-item .num{font-family:'Bai Jamjuree',sans-serif; font-size:13px; color:var(--gold); font-weight:700; margin-bottom:12px;}
+  .why-item h3{font-size:17px; font-weight:600; margin-bottom:8px;}
+  .why-item p{font-size:14px; color:rgba(251,242,228,0.68);}
+
+  /* Process */
+  .process-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--line); border-left:1px solid var(--line);}
+  .process-step{border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:30px 26px;}
+  .process-step .pill-num{
+    display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px;
+    border-radius:50%; background:var(--red); color:var(--cream); font-weight:700; font-size:15px; margin-bottom:16px;
+  }
+  .process-step h3{font-size:17px; font-weight:600; margin-bottom:6px;}
+  .process-step p{font-size:14.5px; color:rgba(36,26,22,0.68);}
+
+  /* Strip */
+  .strip{background:var(--gold); overflow:hidden; padding:16px 0;}
+  .strip-track{display:inline-flex; gap:26px; animation:scroll 40s linear infinite; white-space:nowrap;}
+  .strip-track span{white-space:nowrap; font-family:'Bai Jamjuree',sans-serif; font-weight:600; font-size:15px; color:var(--ink);}
+
+  .reviews{background:var(--cream-dim);}
+  .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  .review-card{background:var(--cream); border:1px solid var(--line); border-radius:12px; padding:22px;}
+  .review-card .stars{color:var(--gold); font-size:14px; margin-bottom:10px;}
+  .review-card p{font-size:14.5px; color:rgba(36,26,22,0.78);}
+  .review-card .who{margin-top:14px; font-size:13px; font-weight:700; color:var(--teal);}
+
+  /* FAQ */
+  .faq{max-width:760px;}
+  .faq details{border-bottom:1px solid var(--line); padding:18px 0;}
+  .faq summary{
+    cursor:pointer; font-weight:700; font-size:16px; list-style:none;
+    display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+"; font-size:22px; color:var(--red); transition:transform 0.2s;}
+  .faq details[open] summary::after{content:"–";}
+  .faq details p{margin-top:12px; font-size:14.5px; color:rgba(36,26,22,0.72); max-width:640px;}
+
+  /* Contact */
+  .contact{background:var(--ink); color:var(--cream);}
+  .contact .section-head h2{color:var(--cream);}
+  .contact .eyebrow{color:var(--gold);}
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:52px;}
+  .info-row{display:flex; gap:16px; padding:16px 0; border-bottom:1px solid rgba(251,242,228,0.14);}
+  .info-row b{display:block; font-size:14px; color:var(--gold); margin-bottom:4px; font-weight:600;}
+  .info-row p{font-size:15px; color:rgba(251,242,228,0.85);}
+  .hours-table{width:100%; border-collapse:collapse; font-size:14.5px;}
+  .hours-table td{padding:9px 0; border-bottom:1px solid rgba(251,242,228,0.12);}
+  .hours-table td:last-child{text-align:right; color:rgba(251,242,228,0.75);}
+  .contact-cta{margin-top:26px; display:flex; gap:12px; flex-wrap:wrap;}
+
+  /* CTA banner */
+  .cta-banner{
+    background:var(--red); color:var(--cream); border-radius:18px; margin:0 auto;
+    max-width:1052px; padding:44px 40px; display:flex; align-items:center; justify-content:space-between;
+    gap:24px; flex-wrap:wrap; box-shadow:0 12px 0 var(--red-deep);
+  }
+  .cta-banner h2{font-size:25px; font-weight:700; max-width:420px;}
+  .cta-banner .btn-ghost{border-color:rgba(251,242,228,0.5); color:var(--cream);}
+
+  footer{background:var(--ink); border-top:1px solid rgba(251,242,228,0.14); padding:26px 0;}
+  .footer-inner{display:flex; justify-content:space-between; align-items:center; color:rgba(251,242,228,0.55); font-size:13px; flex-wrap:wrap; gap:10px;}
+
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .hero-inner{grid-template-columns:1fr; padding:44px 0 40px;}
+    .phone-art{order:-1; margin-bottom:8px;}
+    .phone-shell{width:150px; height:300px;}
+    .sign h1{font-size:29px;}
+    .service-grid{grid-template-columns:1fr 1fr;}
+    .why-grid, .review-grid{grid-template-columns:1fr;}
+    .process-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr; gap:32px;}
+    .cta-banner{flex-direction:column; align-items:flex-start;}
+    .phone-grid{grid-template-columns:1fr 1fr;}
+    .admin-form-grid{grid-template-columns:1fr;}
+    .calc-grid{grid-template-columns:1fr 1fr;}
+    .calc-result{grid-template-columns:1fr;}
+    .nav-actions .btn-ghost{display:none;}
+  }
+  @media (max-width:560px){
+    .service-grid{grid-template-columns:1fr;}
+    .phone-grid{grid-template-columns:1fr;}
+    .calc-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="wrap" style="padding:0;">
+    <div class="ticker-track">
+      <span data-i18n="ticker">✦ <b>ซ่อมไว รอรับได้ในวันเดียว</b> ✦ รับซื้อเครื่องเก่าให้ราคาสูง ✦ มีเครื่องมือสองสภาพดีให้เลือก ✦ ปลดล็อก iCloud / Google / รหัสหน้าจอ ✦ แจ้งราคาก่อนซ่อมทุกครั้ง</span>
+      <span data-i18n="ticker">✦ <b>ซ่อมไว รอรับได้ในวันเดียว</b> ✦ รับซื้อเครื่องเก่าให้ราคาสูง ✦ มีเครื่องมือสองสภาพดีให้เลือก ✦ ปลดล็อก iCloud / Google / รหัสหน้าจอ ✦ แจ้งราคาก่อนซ่อมทุกครั้ง</span>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <span class="mark">ฮ</span>
+      <span>เอ ฮ่องแดง โทรศัพท์<small>ซ่อม · รับซื้อ · ขาย · ปลดล็อก</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#services" data-i18n="nav.services">บริการ</a>
+      <a href="#shop" data-i18n="nav.shop">สินค้ามือสอง</a>
+      <a href="#why" data-i18n="nav.why">ทำไมต้องเรา</a>
+      <a href="#process" data-i18n="nav.process">ขายเครื่องยังไง</a>
+      <a href="#reviews" data-i18n="nav.reviews">รีวิว</a>
+      <a href="#contact" data-i18n="nav.contact">ติดต่อร้าน</a>
+    </nav>
+    <div class="nav-actions">
+      <select id="langSelect" class="lang-select" aria-label="ภาษา / Language">
+        <option value="th">ไทย</option>
+        <option value="en">English</option>
+      </select>
+      <a href="#" class="btn btn-line" data-i18n="nav.line">แชท LINE</a>
+      <a href="tel:0800000000" class="btn btn-red" data-i18n="nav.call">โทร 080-000-0000</a>
+    </div>
+    <button class="burger" aria-label="เมนู"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap hero-inner">
+    <div>
+      <div class="sign">
+        <h1 data-i18n="hero.title">จอแตก แบตเสื่อม หรืออยากเปลี่ยนเครื่อง — จบที่ร้านเดียว</h1>
+        <p class="lead" data-i18n="hero.lead">ซ่อมโทรศัพท์ทุกรุ่น รับซื้อเครื่องเก่าราคาสูง ขายเครื่องมือสองสภาพดี และปลดล็อกเครื่องที่ติดล็อก ตรวจเช็กและแจ้งราคาก่อนทุกครั้ง ไม่มีบวกเพิ่มทีหลัง</p>
+        <div class="hero-actions">
+          <a href="tel:0800000000" class="btn btn-ghost" data-i18n="hero.btnCall">โทรสอบถามเลย</a>
+          <a href="#services" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="hero.btnServices">ดูบริการทั้งหมด</a>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div><b data-i18n="hero.s1b">10+ ปี</b><span data-i18n="hero.s1s">ประสบการณ์ซ่อม</span></div>
+        <div><b data-i18n="hero.s2b">ภายในวันเดียว</b><span data-i18n="hero.s2s">งานซ่อมทั่วไป</span></div>
+        <div><b data-i18n="hero.s3b">มีประกันงาน</b><span data-i18n="hero.s3s">อะไหล่คุณภาพ</span></div>
+      </div>
+    </div>
+    <div class="phone-art">
+      <div class="phone-shell">
+        <div class="notch"></div>
+        <div class="crack"></div>
+        <div class="wrench">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 0-5.4 4.6l-6 6 2.8 2.8 6-6a4 4 0 0 0 4.6-5.4l-2.3 2.3-2-2 2.3-2.3z" stroke="#241A16" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="svc.eyebrow">บริการของร้าน</div>
+      <h2 data-i18n="svc.title">ครบทุกเรื่องมือถือ ไม่ต้องวิ่งหลายที่</h2>
+      <p data-i18n="svc.sub">เลือกใช้บริการได้ตามที่ต้องการ ทุกบริการตรวจเช็กและแจ้งราคาให้ทราบก่อนเริ่มงานเสมอ</p>
+    </div>
+    <div class="service-grid">
+      <div class="service-card featured">
+        <div class="badge" data-i18n="svc1.badge">ยอดนิยม</div>
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 0-5.4 4.6l-6 6 2.8 2.8 6-6a4 4 0 0 0 4.6-5.4l-2.3 2.3-2-2 2.3-2.3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <h3 data-i18n="svc1.name">ซ่อมโทรศัพท์</h3>
+        <p data-i18n="svc1.desc">เปลี่ยนจอ แบต พอร์ตชาร์จ ลำโพง ไมค์ และกล้อง ครอบคลุมทั้ง iPhone และ Android</p>
+        <ul>
+          <li data-i18n="svc1.l1">อะไหล่คุณภาพ</li>
+          <li data-i18n="svc1.l2">รับประกันงานซ่อม</li>
+          <li data-i18n="svc1.l3">ซ่อมไวรอรับได้</li>
+        </ul>
+        <a href="tel:0800000000" data-i18n="svc1.link">โทรนัดคิวซ่อม →</a>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 17V7a2 2 0 0 1 2-2h8l6 6v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3 data-i18n="svc2.name">รับซื้อโทรศัพท์มือสอง</h3>
+        <p data-i18n="svc2.desc">รับซื้อทุกสภาพ ทั้งเครื่องสวยและเครื่องมีปัญหา จ่ายเงินสดทันทีหน้าร้าน</p>
+        <ul>
+          <li data-i18n="svc2.l1">จ่ายสดทันที</li>
+          <li data-i18n="svc2.l2">ราคายุติธรรม</li>
+          <li data-i18n="svc2.l3">รับทุกสภาพ</li>
+        </ul>
+        <a href="tel:0800000000" data-i18n="svc2.link">ประเมินราคาเครื่อง →</a>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M9 19h6" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3 data-i18n="svc3.name">ขายเครื่องมือสอง</h3>
+        <p data-i18n="svc3.desc">คัดเครื่องมือสองผ่านการตรวจเช็กแล้ว พร้อมสายชาร์จ เคส ฟิล์มกันรอย และอุปกรณ์เสริม</p>
+        <ul>
+          <li data-i18n="svc3.l1">ตรวจเช็กก่อนขาย</li>
+          <li data-i18n="svc3.l2">มีประกันร้าน</li>
+        </ul>
+        <a href="tel:0800000000" data-i18n="svc3.link">ดูเครื่องพร้อมขาย →</a>
+      </div>
+      <div class="service-card">
+        <div class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg></div>
+        <h3 data-i18n="svc4.name">ปลดล็อก / เคลียร์เครื่อง</h3>
+        <p data-i18n="svc4.desc">ลืมรหัสผ่าน ติดบัญชี iCloud หรือ Google ปลดล็อกซิม เคลียร์เครื่องก่อนขายต่อ</p>
+        <ul>
+          <li data-i18n="svc4.l1">ติด iCloud/Google</li>
+          <li data-i18n="svc4.l2">ปลดล็อกซิม</li>
+        </ul>
+        <a href="tel:0800000000" data-i18n="svc4.link">สอบถามเคสของคุณ →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="wrap">
+    <div class="shop-topbar">
+      <div class="section-head" style="margin-bottom:0;">
+        <div class="eyebrow" data-i18n="shop.eyebrow">สินค้ามือสองพร้อมขาย</div>
+        <h2 data-i18n="shop.title">เลือกเครื่อง กดดาว แล้วลองคำนวณค่าผ่อนได้เลย</h2>
+        <p data-i18n="shop.sub">กดดาวเพื่อให้คะแนนเครื่องที่ถูกใจ หรือกด "เลือกผ่อนเครื่องนี้" เพื่อดูยอดผ่อนต่อเดือนแบบคร่าวๆ ก่อนตัดสินใจ</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button id="editToggle" type="button" class="btn btn-ghost admin-toggle-btn" data-i18n="edit.toggle">แก้ไขหน้าเว็บ</button>
+        <button id="adminToggle" type="button" class="btn btn-ghost admin-toggle-btn" data-i18n="admin.toggle">โหมดแอดมิน</button>
+      </div>
+    </div>
+
+    <div class="admin-form" id="adminForm">
+      <h3 data-i18n="admin.title">เพิ่มสินค้าใหม่ (สำหรับแอดมิน)</h3>
+      <p class="admin-note" data-i18n="admin.note">อัปโหลดรูปเครื่อง ตั้งชื่อรุ่นและราคา แล้วกดเพิ่มสินค้า ระบบจะแสดงในหน้าขายทันที</p>
+      <div class="admin-form-grid">
+        <label><span data-i18n="admin.fImg">รูปภาพเครื่อง</span>
+          <input type="file" id="pImage" accept="image/*">
+        </label>
+        <label><span data-i18n="admin.fName">รุ่น / ชื่อเครื่อง</span>
+          <input type="text" id="pName" placeholder="เช่น iPhone 13 128GB">
+        </label>
+        <label><span data-i18n="admin.fPrice">ราคา (บาท)</span>
+          <input type="number" id="pPrice" placeholder="เช่น 12900">
+        </label>
+        <label><span data-i18n="admin.fDesc">รายละเอียดสั้นๆ</span>
+          <input type="text" id="pDesc" placeholder="เช่น สภาพสวย ประกันร้าน 1 เดือน">
+        </label>
+      </div>
+      <div id="pImgPreview"></div>
+      <div style="margin-top:14px;">
+        <button id="pAddBtn" type="button" class="btn btn-red" data-i18n="admin.addBtn">เพิ่มสินค้านี้</button>
+      </div>
+    </div>
+
+    <div id="phoneGrid" class="phone-grid"></div>
+
+    <div class="calc-card" id="calc">
+      <h3 data-i18n="calc.title">คำนวณค่าผ่อนก่อนตัดสินใจ</h3>
+      <p class="calc-sub" data-i18n="calc.sub">เลือกเครื่องที่สนใจ ใส่เงินดาวน์และจำนวนงวดที่ต้องการ ระบบจะสรุปยอดผ่อนโดยประมาณให้ดูก่อน</p>
+      <div class="calc-grid">
+        <label><span data-i18n="calc.phone">เครื่องที่เลือก</span>
+          <select id="calcPhone"></select>
+        </label>
+        <label><span data-i18n="calc.price">ราคาสินค้า (บาท)</span>
+          <input type="number" id="calcPrice" readonly>
+        </label>
+        <label><span data-i18n="calc.down">เงินดาวน์ (บาท)</span>
+          <input type="number" id="calcDown" value="0" min="0">
+        </label>
+        <label><span data-i18n="calc.months">ผ่อนกี่งวด</span>
+          <select id="calcMonths">
+            <option value="3" data-i18n="mo3">3 เดือน</option>
+            <option value="6" data-i18n="mo6">6 เดือน</option>
+            <option value="10" selected data-i18n="mo10">10 เดือน</option>
+            <option value="12" data-i18n="mo12">12 เดือน</option>
+            <option value="24" data-i18n="mo24">24 เดือน</option>
+          </select>
+        </label>
+      </div>
+      <button id="calcBtn" type="button" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="calc.btn">คำนวณยอดผ่อน</button>
+      <div id="calcResult" class="calc-result" hidden></div>
+      <p class="calc-note" data-i18n="calc.note">*เป็นการประมาณการเบื้องต้นเพื่อให้ลูกค้าตัดสินใจเท่านั้น ยอดจริงขึ้นอยู่กับการตรวจสอบสภาพเครื่องและเงื่อนไขของร้าน ณ วันที่ทำรายการ</p>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="wrap" style="padding:0;">
+    <div class="strip-track">
+      <span data-i18n="strip">★ เอ ฮ่องแดง โทรศัพท์ ★ แจ้งราคาก่อนซ่อมทุกครั้ง ★ ซ่อมไว รอรับได้ ★ รับซื้อราคาสูง ★ เอ ฮ่องแดง โทรศัพท์ ★ แจ้งราคาก่อนซ่อมทุกครั้ง ★ ซ่อมไว รอรับได้ ★ รับซื้อราคาสูง ★</span>
+      <span data-i18n="strip">★ เอ ฮ่องแดง โทรศัพท์ ★ แจ้งราคาก่อนซ่อมทุกครั้ง ★ ซ่อมไว รอรับได้ ★ รับซื้อราคาสูง ★ เอ ฮ่องแดง โทรศัพท์ ★ แจ้งราคาก่อนซ่อมทุกครั้ง ★ ซ่อมไว รอรับได้ ★ รับซื้อราคาสูง ★</span>
+    </div>
+  </div>
+</div>
+
+<section class="why" id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="why.eyebrow">ทำไมต้องร้านเรา</div>
+      <h2 data-i18n="why.title">ซ่อมตรงจุด ซื้อขายตรงไปตรงมา</h2>
+      <p data-i18n="why.sub">ไม่ใช่แค่ซ่อมเครื่อง — เราอยากให้ลูกค้ารู้สึกว่าเดินเข้าร้านแล้วสบายใจ ราคาชัดเจน ไม่มีเซอร์ไพรส์</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-item"><div class="num">01</div><h3 data-i18n="why1.t">แจ้งราคาก่อนซ่อม</h3><p data-i18n="why1.p">ตรวจเครื่องและแจ้งราคาให้ทราบก่อนเริ่มงานทุกครั้ง ไม่มีบวกเพิ่มทีหลัง</p></div>
+      <div class="why-item"><div class="num">02</div><h3 data-i18n="why2.t">อะไหล่คุณภาพ</h3><p data-i18n="why2.p">เลือกใช้อะไหล่คุณภาพดี พร้อมรับประกันงานซ่อมทุกชิ้นงาน</p></div>
+      <div class="why-item"><div class="num">03</div><h3 data-i18n="why3.t">ซ่อมไว รอรับได้</h3><p data-i18n="why3.p">งานซ่อมทั่วไปเสร็จภายในวันเดียว บางเคสรอรับได้เลยหน้าร้าน</p></div>
+      <div class="why-item"><div class="num">04</div><h3 data-i18n="why4.t">รับซื้อราคาสูง</h3><p data-i18n="why4.p">ประเมินราคาตามสภาพเครื่องจริง จ่ายเงินสดทันทีไม่ต้องรอ</p></div>
+      <div class="why-item"><div class="num">05</div><h3 data-i18n="why5.t">ปลดล็อกได้จริง</h3><p data-i18n="why5.p">เคสลืมรหัส ติดบัญชี หรือติดซิม เรามีวิธีจัดการให้ตรงจุด</p></div>
+      <div class="why-item"><div class="num">06</div><h3 data-i18n="why6.t">คุยง่าย ราคากันเอง</h3><p data-i18n="why6.p">อยู่ในพื้นที่มานาน ลูกค้าประจำบอกต่อกันปากต่อปาก</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="proc.eyebrow">ขายเครื่องกับเรา</div>
+      <h2 data-i18n="proc.title">3 ขั้นตอนง่ายๆ รับเงินสดไว</h2>
+    </div>
+    <div class="process-grid">
+      <div class="process-step"><div class="pill-num">1</div><h3 data-i18n="proc1.t">แจ้งรุ่นและสภาพเครื่อง</h3><p data-i18n="proc1.p">โทรหรือแวะที่ร้าน แจ้งรุ่นเครื่องและสภาพเบื้องต้นให้ทีมงานทราบ</p></div>
+      <div class="process-step"><div class="pill-num">2</div><h3 data-i18n="proc2.t">ตรวจเครื่องฟรี</h3><p data-i18n="proc2.p">ทีมงานตรวจสภาพเครื่องจริงและแจ้งราคารับซื้อให้ทราบทันที ไม่มีค่าใช้จ่าย</p></div>
+      <div class="process-step"><div class="pill-num">3</div><h3 data-i18n="proc3.t">รับเงินสดทันที</h3><p data-i18n="proc3.p">ตกลงราคาแล้วรับเงินสดกลับบ้านได้เลย ไม่ต้องรอโอนหรือนัดครั้งหน้า</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="rev.eyebrow">เสียงจากลูกค้า</div>
+      <h2 data-i18n="rev.title">ลูกค้าประจำพูดถึงร้านเราแบบนี้</h2>
+    </div>
+    <div class="review-grid">
+      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev1.p">จอแตกเอาไปเปลี่ยนตอนเช้า บ่ายมารับได้เลย ราคาบอกไว้ตรงตามนั้นทุกอย่าง</p><div class="who" data-i18n="rev1.w">คุณเอ, ลูกค้าประจำ</div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev2.p">เอาเครื่องเก่าไปขาย ตรวจไว ให้ราคาดีกว่าที่คิด จ่ายสดเลยไม่ต้องรอโอน</p><div class="who" data-i18n="rev2.w">คุณบี, ขายเครื่องเก่า</div></div>
+      <div class="review-card"><div class="stars">★★★★★</div><p data-i18n="rev3.p">ลืมรหัสเครื่องที่ซื้อมือสองมา ทางร้านช่วยปลดล็อกให้จนใช้งานได้ปกติ</p><div class="who" data-i18n="rev3.w">คุณซี, ปลดล็อกเครื่อง</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="faq.eyebrow">คำถามที่พบบ่อย</div>
+      <h2 data-i18n="faq.title">ยังสงสัยอยู่? ลองอ่านตรงนี้ก่อน</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary data-i18n="faq1.q">ซ่อมโทรศัพท์ใช้เวลานานแค่ไหน?</summary>
+        <p data-i18n="faq1.a">งานซ่อมทั่วไป เช่น เปลี่ยนจอหรือแบตเตอรี่ ส่วนใหญ่เสร็จภายในวันเดียว บางเคสรอรับได้เลยที่หน้าร้าน ขึ้นอยู่กับอาการเครื่องและอะไหล่ที่ต้องใช้</p>
+      </details>
+      <details>
+        <summary data-i18n="faq2.q">รับซื้อเครื่องที่จอแตกหรือใช้งานไม่ได้ไหม?</summary>
+        <p data-i18n="faq2.a">รับซื้อทุกสภาพ ทั้งเครื่องสวยและเครื่องมีปัญหา ทางร้านจะตรวจสภาพจริงแล้วแจ้งราคาให้ทราบก่อนตัดสินใจ</p>
+      </details>
+      <details>
+        <summary data-i18n="faq3.q">เครื่องมือสองที่ขายมีประกันไหม?</summary>
+        <p data-i18n="faq3.a">เครื่องทุกเครื่องผ่านการตรวจเช็กก่อนวางขาย และมีประกันจากทางร้านตามระยะเวลาที่แจ้งไว้ตอนซื้อ</p>
+      </details>
+      <details>
+        <summary data-i18n="faq4.q">ปลดล็อกเครื่องที่ติด iCloud หรือ Google ได้จริงไหม?</summary>
+        <p data-i18n="faq4.a">ขึ้นอยู่กับแต่ละเคส แนะนำให้นำเครื่องมาให้ทีมงานตรวจสอบก่อน เพื่อประเมินว่าดำเนินการได้หรือไม่และใช้เวลาเท่าไหร่</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" data-i18n="ct.eyebrow">ติดต่อร้าน</div>
+      <h2 data-i18n="ct.title">แวะมาที่ร้าน หรือโทรสอบถามก่อนได้</h2>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <div class="info-row"><div><b data-i18n="ct.addrLabel">ที่อยู่ร้าน</b><p data-i18n="ct.addr">เลขที่ 000 ถนนตัวอย่าง ตำบล/แขวง อำเภอ/เขต จังหวัด 00000</p></div></div>
+        <div class="info-row"><div><b data-i18n="ct.phoneLabel">เบอร์โทร</b><p>080-000-0000</p></div></div>
+        <div class="info-row"><div><b data-i18n="ct.lineLabel">LINE ร้านค้า</b><p>@aehongdaeng</p></div></div>
+        <div class="contact-cta">
+          <a href="tel:0800000000" class="btn btn-red" data-i18n="ct.btnCall">โทรเลย</a>
+          <a href="#" class="btn btn-line" data-i18n="ct.btnLine">แชท LINE</a>
+        </div>
+      </div>
+      <div>
+        <table class="hours-table">
+          <tr><td data-i18n="ct.h1">จันทร์ - ศุกร์</td><td>09:00 - 20:00</td></tr>
+          <tr><td data-i18n="ct.h2">เสาร์ - อาทิตย์</td><td>10:00 - 19:00</td></tr>
+          <tr><td data-i18n="ct.h3">วันหยุดนักขัตฤกษ์</td><td>ปิดร้าน</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-banner">
+      <h2 data-i18n="banner.title">พร้อมซ่อม ขาย หรือปลดล็อกเครื่องแล้วหรือยัง?</h2>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <a href="tel:0800000000" class="btn" style="background:var(--gold); color:var(--ink);" data-i18n="banner.btnCall">โทรสอบถามเลย</a>
+        <a href="#" class="btn btn-ghost" data-i18n="banner.btnLine">แชท LINE</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span data-i18n="footer.left">© 2026 เอ ฮ่องแดง โทรศัพท์ — บริการซ่อม รับซื้อ ขาย ปลดล็อกโทรศัพท์มือถือ</span>
+    <span data-i18n="footer.right">สร้างเว็บไซต์ด้วย GitHub Pages</span>
+  </div>
+</footer>
+
+<div class="edit-bar" id="editBar">
+  <span data-i18n="edit.hint">โหมดแก้ไข: คลิกที่ข้อความไหนก็แก้ได้ แล้วกด "บันทึก" (บันทึกในเครื่องนี้เท่านั้น)</span>
+  <button id="editSave" type="button" data-i18n="edit.save">บันทึก</button>
+  <button id="editCancel" type="button" data-i18n="edit.cancel">ยกเลิก</button>
+</div>
+
+<script>
+(function(){
+  var STORAGE_KEY = 'ahd_phones_v1';
+  var CONTENT_KEY = 'ahd_content_v1';
+  var RATING_KEY = 'ahd_ratings_v1';
+  var LANG_KEY = 'ahd_lang';
+  var PASS_KEY = 'ahd_admin_pass';
+  var ADMIN_PASS = 'admin1234';
+
+  var currentLang = 'th';
+  try { currentLang = localStorage.getItem(LANG_KEY) || 'th'; } catch(e) {}
+
+  var CONTENT = {};
+  try {
+    var saved = localStorage.getItem(CONTENT_KEY);
+    if(saved) CONTENT = JSON.parse(saved);
+  } catch(e) {}
+
+  var LANGS = [
+    { code:'th', label:'ไทย', dir:'ltr' },
+    { code:'en', label:'English', dir:'ltr' }
+  ];
+
+  var I18N = {
+    en: {
+      "ticker":"✦ <b>Fast repair — same-day service</b> ✦ We buy used phones at top prices ✦ Quality second-hand phones ✦ Unlock iCloud / Google / screen lock ✦ Price quoted before every repair",
+      "strip":"★ A Hong Daeng Mobile ★ Price quoted before every repair ★ Fast repair ★ Top buy-back prices ★",
+      "nav.services":"Services","nav.shop":"Second-hand","nav.why":"Why us","nav.process":"Sell your phone","nav.reviews":"Reviews","nav.contact":"Contact","nav.line":"LINE Chat","nav.call":"Call 080-000-0000",
+      "hero.title":"Cracked screen, weak battery, or want a new phone — one shop does it all",
+      "hero.lead":"We repair all phone models, buy used phones at great prices, sell quality second-hand devices, and unlock locked phones. Free inspection and a clear quote before any work.",
+      "hero.btnCall":"Call us now","hero.btnServices":"See all services",
+      "hero.s1b":"10+ yrs","hero.s1s":"Repair experience","hero.s2b":"Same day","hero.s2s":"Most repairs","hero.s3b":"Warranty","hero.s3s":"Quality parts",
+      "svc.eyebrow":"Our services","svc.title":"Everything mobile in one place","svc.sub":"Pick the service you need. Every job starts with an inspection and a clear quote.",
+      "svc1.badge":"Popular","svc1.name":"Phone repair","svc1.desc":"Screen, battery, charging port, speaker, mic and camera replacement.","svc1.l1":"Quality parts","svc1.l2":"Repair warranty","svc1.l3":"Same-day service","svc1.link":"Call to book →",
+      "svc2.name":"We buy used phones","svc2.desc":"Any condition. Cash paid on the spot.","svc2.l1":"Instant cash","svc2.l2":"Fair price","svc2.l3":"Any condition","svc2.link":"Get a quote →",
+      "svc3.name":"Second-hand phones","svc3.desc":"Inspected used phones with accessories.","svc3.l1":"Inspected","svc3.l2":"Shop warranty","svc3.link":"See stock →",
+      "svc4.name":"Unlock / reset","svc4.desc":"Forgot password, iCloud/Google lock, SIM unlock.","svc4.l1":"iCloud/Google","svc4.l2":"SIM unlock","svc4.link":"Ask about your case →",
+      "shop.eyebrow":"Second-hand stock","shop.title":"Pick a phone, rate it, try the calculator","shop.sub":"Tap stars to rate, or tap Choose to see monthly installment.",
+      "phone.choose":"Choose this phone →","phone.delete":"Remove item",
+      "calc.title":"Calculate installments","calc.sub":"Choose a phone, enter down payment and term.",
+      "calc.phone":"Selected phone","calc.price":"Price (THB)","calc.down":"Down payment (THB)","calc.months":"Term","calc.btn":"Calculate",
+      "calc.lPrice":"Item price","calc.lDown":"Down payment","calc.lFin":"Amount to finance","calc.lFee":"Fee (~5%)","calc.lMonthly":"Monthly","calc.lTotal":"Total",
+      "calc.note":"*Preliminary estimate only.","months":"months",
+      "mo3":"3 months","mo6":"6 months","mo10":"10 months","mo12":"12 months","mo24":"24 months",
+      "why.eyebrow":"Why choose us","why.title":"Precise repairs, straightforward deals","why.sub":"Clear prices, no surprises.",
+      "why1.t":"Quote before repair","why1.p":"Inspect and quote first — no hidden fees.","why2.t":"Quality parts","why2.p":"Good parts with warranty.","why3.t":"Fast repairs","why3.p":"Most done same day.","why4.t":"Top buy-back","why4.p":"Fair assessment, instant cash.","why5.t":"Real unlocking","why5.p":"We handle all lock cases.","why6.t":"Friendly prices","why6.p":"Local shop, word of mouth.",
+      "proc.eyebrow":"Sell to us","proc.title":"3 easy steps, cash in hand",
+      "proc1.t":"Tell us model & condition","proc1.p":"Call or visit.","proc2.t":"Free inspection","proc2.p":"We check and quote on spot.","proc3.t":"Cash immediately","proc3.p":"Agree and take cash home.",
+      "rev.eyebrow":"Reviews","rev.title":"What customers say",
+      "rev1.p":"Screen cracked — morning drop-off, afternoon pickup. Price as quoted.","rev1.w":"Mr. A, regular",
+      "rev2.p":"Sold old phone — quick, good price, cash on spot.","rev2.w":"Mr. B",
+      "rev3.p":"Forgot password on used phone — shop unlocked it.","rev3.w":"Mr. C",
+      "faq.eyebrow":"FAQ","faq.title":"Still unsure? Read this",
+      "faq1.q":"How long does repair take?","faq1.a":"Most same day, some while you wait.",
+      "faq2.q":"Do you buy broken phones?","faq2.a":"Yes, any condition. We inspect and quote.",
+      "faq3.q":"Warranty on used phones?","faq3.a":"Yes, shop warranty as stated.",
+      "faq4.q":"Can you unlock iCloud/Google?","faq4.a":"Depends on case. Bring phone for assessment.",
+      "ct.eyebrow":"Contact","ct.title":"Visit or call ahead",
+      "ct.addrLabel":"Address","ct.addr":"000 Example Road","ct.phoneLabel":"Phone","ct.lineLabel":"LINE","ct.btnCall":"Call now","ct.btnLine":"LINE Chat",
+      "ct.h1":"Mon - Fri","ct.h2":"Sat - Sun","ct.h3":"Holidays",
+      "banner.title":"Ready to repair, sell, or unlock?","banner.btnCall":"Call us","banner.btnLine":"LINE",
+      "footer.left":"© 2026 A Hong Daeng Mobile","footer.right":"Built with GitHub Pages",
+      "admin.toggle":"Admin mode","admin.title":"Add product","admin.note":"Upload photo, set name and price.","admin.fImg":"Photo","admin.fName":"Model","admin.fPrice":"Price (THB)","admin.fDesc":"Description","admin.addBtn":"Add product",
+      "edit.toggle":"Edit website","edit.on":"Exit edit","edit.save":"Save","edit.cancel":"Cancel","edit.hint":"Edit mode: click text to edit, then save (saved locally only).","edit.saved":"Saved!","edit.error":"Save failed.",
+      "a.down":"Down payment exceeds price.","a.add":"Enter name and price.","a.del":"Delete this product?","admin.wrong":"Wrong password."
+    }
+  };
+
+  var baseContent = {};
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    baseContent[el.getAttribute('data-i18n')] = el.innerHTML;
+  });
+
+  function T(key){
+    if (CONTENT[key] != null) return CONTENT[key];
+    var dict = I18N[currentLang] || {};
+    if (dict[key] != null) return dict[key];
+    return baseContent[key] != null ? baseContent[key] : key;
+  }
+
+  function applyLang(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      el.innerHTML = T(key);
+    });
+    try { localStorage.setItem(LANG_KEY, lang); } catch(e) {}
+    var sel = document.getElementById('langSelect');
+    if (sel) sel.value = lang;
+    renderGrid();
+  }
+
+  var langSel = document.getElementById('langSelect');
+  if (langSel) langSel.addEventListener('change', function(){ applyLang(langSel.value); });
+
+  document.querySelector('.burger').addEventListener('click', function(){
+    var links = document.querySelector('.nav-links');
+    var isOpen = links.style.display === 'flex';
+    links.style.display = isOpen ? 'none' : 'flex';
+    links.style.flexDirection = 'column';
+    links.style.position = 'absolute';
+    links.style.top = '78px';
+    links.style.left = '0';
+    links.style.right = '0';
+    links.style.background = 'var(--cream)';
+    links.style.padding = '20px 24px';
+    links.style.borderBottom = '1px solid var(--line)';
+    links.style.gap = '16px';
+  });
+
+  function placeholderSvg(color){
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="'+color+'"/><rect x="70" y="28" width="60" height="144" rx="10" fill="rgba(255,255,255,0.88)"/><circle cx="100" cy="152" r="4" fill="'+color+'"/></svg>');
+  }
+
+  var seedPhones = [
+    { id: 'seed-1', name: 'iPhone 12 128GB', price: 8900, desc: 'สภาพดี แบต 88%', img: placeholderSvg('#2E6E63') },
+    { id: 'seed-2', name: 'iPhone 13 128GB', price: 12900, desc: 'สภาพสวย ไม่มีรอย', img: placeholderSvg('#C6362B') },
+    { id: 'seed-3', name: 'Samsung A54 128GB', price: 6900, desc: 'ใช้งานน้อย', img: placeholderSvg('#EFA92E') },
+    { id: 'seed-4', name: 'iPhone 11 64GB', price: 5500, desc: 'จอมีรอยเล็กน้อย', img: placeholderSvg('#241A16') }
+  ];
+
+  function loadPhones(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    savePhones(seedPhones);
+    return seedPhones.slice();
+  }
+  function savePhones(list){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }catch(e){} }
+  function loadRatings(){ try{ var r=localStorage.getItem(RATING_KEY); if(r) return JSON.parse(r); }catch(e){} return {}; }
+  function saveRatings(o){ try{ localStorage.setItem(RATING_KEY, JSON.stringify(o)); }catch(e){} }
+
+  var phones = loadPhones();
+  var ratings = loadRatings();
+  var grid = document.getElementById('phoneGrid');
+  var calcPhoneSel = document.getElementById('calcPhone');
+  var calcPriceInput = document.getElementById('calcPrice');
+
+  function money(n){ return Math.round(n).toLocaleString('th-TH'); }
+
+  function renderStars(container, id, value){
+    container.innerHTML = '';
+    for(var i=1;i<=5;i++){
+      var s=document.createElement('span');
+      s.textContent='★';
+      if(i<=value) s.className='filled';
+      (function(v){ s.addEventListener('click',function(){ ratings[id]=v; saveRatings(ratings); renderStars(container,id,v); }); })(i);
+      container.appendChild(s);
+    }
+  }
+
+  function renderGrid(){
+    if(!grid) return;
+    grid.innerHTML='';
+    calcPhoneSel.innerHTML='';
+    phones.forEach(function(p){
+      var card=document.createElement('div');
+      card.className='phone-card';
+      var imgWrap=document.createElement('div');
+      imgWrap.className='phone-card-img';
+      var img=document.createElement('img');
+      img.src=p.img; img.alt=p.name;
+      imgWrap.appendChild(img);
+      var body=document.createElement('div');
+      body.className='phone-card-body';
+      var h3=document.createElement('h3'); h3.textContent=p.name;
+      var desc=document.createElement('p'); desc.className='desc'; desc.textContent=p.desc||'';
+      var price=document.createElement('div'); price.className='price'; price.textContent=money(p.price)+' บาท';
+      var starWrap=document.createElement('div'); starWrap.className='star-rate';
+      renderStars(starWrap, p.id, ratings[p.id]||0);
+      var actions=document.createElement('div'); actions.className='phone-card-actions';
+      var chooseBtn=document.createElement('button');
+      chooseBtn.type='button'; chooseBtn.className='btn btn-ghost btn-sm';
+      chooseBtn.textContent=T('phone.choose');
+      chooseBtn.addEventListener('click',function(){
+        calcPhoneSel.value=p.id; calcPriceInput.value=p.price;
+        document.getElementById('calc').scrollIntoView({behavior:'smooth'});
+      });
+      var delBtn=document.createElement('button');
+      delBtn.type='button'; delBtn.className='btn-admin-del';
+      delBtn.textContent=T('phone.delete');
+      delBtn.addEventListener('click',function(){
+        if(confirm(T('a.del'))){
+          phones=phones.filter(function(x){return x.id!==p.id;});
+          savePhones(phones); renderGrid();
+        }
+      });
+      actions.appendChild(chooseBtn); actions.appendChild(delBtn);
+      body.appendChild(h3); body.appendChild(desc); body.appendChild(price);
+      body.appendChild(starWrap); body.appendChild(actions);
+      card.appendChild(imgWrap); card.appendChild(body);
+      grid.appendChild(card);
+      var opt=document.createElement('option');
+      opt.value=p.id; opt.textContent=p.name+' - '+money(p.price)+' บาท';
+      calcPhoneSel.appendChild(opt);
+    });
+    if(phones.length) calcPriceInput.value=phones[0].price;
+  }
+
+  calcPhoneSel.addEventListener('change',function(){
+    var f=phones.filter(function(p){return p.id===calcPhoneSel.value;})[0];
+    if(f) calcPriceInput.value=f.price;
+  });
+
+  document.getElementById('calcBtn').addEventListener('click',function(){
+    var price=parseFloat(calcPriceInput.value)||0;
+    var downInput=document.getElementById('calcDown');
+    var down=parseFloat(downInput.value)||0;
+    var months=parseInt(document.getElementById('calcMonths').value,10)||10;
+    if(down>price){ alert(T('a.down')); down=price; downInput.value=down; }
+    if(down<0){ down=0; downInput.value=0; }
+    var financed=Math.max(price-down,0);
+    var fee=financed*0.05;
+    var toPay=financed+fee;
+    var monthly=months>0?toPay/months:toPay;
+    var grand=down+toPay;
+    var result=document.getElementById('calcResult');
+    result.hidden=false;
+    result.innerHTML=
+      '<div class="row"><span>'+T('calc.lPrice')+'</span><b>'+money(price)+'</b></div>'+
+      '<div class="row"><span>'+T('calc.lDown')+'</span><b>'+money(down)+'</b></div>'+
+      '<div class="row"><span>'+T('calc.lFin')+'</span><b>'+money(financed)+'</b></div>'+
+      '<div class="row"><span>'+T('calc.lFee')+'</span><b>'+money(fee)+'</b></div>'+
+      '<div class="row"><span>'+T('calc.lMonthly')+' ('+months+' '+T('months')+')</span><b>'+money(monthly)+'</b></div>'+
+      '<div class="row total"><span>'+T('calc.lTotal')+'</span><b>'+money(grand)+'</b></div>';
+  });
+
+  function getPass(){
+    var pass=null;
+    try{ pass=sessionStorage.getItem(PASS_KEY); }catch(e){}
+    if(!pass){ pass=prompt('ใส่รหัสผ่านแอดมิน:\n(ค่าเริ่มต้น: admin1234)'); if(pass===null) return null; }
+    return pass;
+  }
+
+  var adminToggle=document.getElementById('adminToggle');
+  adminToggle.addEventListener('click',function(){
+    var isAdmin=document.body.classList.contains('admin-mode');
+    if(isAdmin){
+      document.body.classList.remove('admin-mode');
+      adminToggle.textContent=T('admin.toggle');
+      return;
+    }
+    var pass=getPass();
+    if(pass===null) return;
+    if(pass!==ADMIN_PASS){
+      alert(T('admin.wrong'));
+      return;
+    }
+    try{ sessionStorage.setItem(PASS_KEY, pass); }catch(e){}
+    document.body.classList.add('admin-mode');
+    adminToggle.textContent='ออกจากโหมดแอดมิน';
+  });
+
+  var pImage=document.getElementById('pImage');
+  var pImgPreview=document.getElementById('pImgPreview');
+  var pendingImg='';
+  pImage.addEventListener('change',function(){
+    var file=pImage.files[0];
+    if(!file) return;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      pendingImg=e.target.result;
+      pImgPreview.innerHTML='';
+      var img=document.createElement('img');
+      img.src=pendingImg;
+      pImgPreview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('pAddBtn').addEventListener('click',function(){
+    var name=document.getElementById('pName').value.trim();
+    var price=parseFloat(document.getElementById('pPrice').value);
+    var desc=document.getElementById('pDesc').value.trim();
+    if(!name||!price){ alert(T('a.add')); return; }
+    phones.push({id:'p-'+Date.now(),name:name,price:price,desc:desc,img:pendingImg||placeholderSvg('#2E6E63')});
+    savePhones(phones); renderGrid();
+    document.getElementById('pName').value='';
+    document.getElementById('pPrice').value='';
+    document.getElementById('pDesc').value='';
+    pImage.value=''; pImgPreview.innerHTML=''; pendingImg='';
+  });
+
+  var editToggle=document.getElementById('editToggle');
+  var editSnapshot=null;
+
+  function collectContent(){
+    var map={};
+    document.querySelectorAll('[data-i18n]').forEach(function(el){ map[el.getAttribute('data-i18n')]=el.innerHTML; });
+    return map;
+  }
+
+  editToggle.addEventListener('click',function(){
+    var isEdit=document.body.classList.contains('edit-mode');
+    if(isEdit){
+      document.body.classList.remove('edit-mode');
+      document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
+      editToggle.textContent=T('edit.toggle');
+      return;
+    }
+    var pass=getPass();
+    if(pass===null) return;
+    if(pass!==ADMIN_PASS){
+      alert(T('admin.wrong'));
+      return;
+    }
+    startEditMode();
+  });
+
+  function startEditMode(){
+    editSnapshot=collectContent();
+    document.body.classList.add('edit-mode');
+    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='true';});
+    editToggle.textContent=T('edit.on');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  document.getElementById('editSave').addEventListener('click',function(){
+    CONTENT=collectContent();
+    try{ localStorage.setItem(CONTENT_KEY, JSON.stringify(CONTENT)); }catch(e){}
+    alert(T('edit.saved'));
+    document.body.classList.remove('edit-mode');
+    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
+    editToggle.textContent=T('edit.toggle');
+  });
+
+  document.getElementById('editCancel').addEventListener('click',function(){
+    if(editSnapshot){
+      document.querySelectorAll('[data-i18n]').forEach(function(el){
+        var key=el.getAttribute('data-i18n');
+        if(editSnapshot[key]!=null) el.innerHTML=editSnapshot[key];
+      });
+    }
+    document.body.classList.remove('edit-mode');
+    document.querySelectorAll('[data-i18n]').forEach(function(el){el.contentEditable='false';});
+    editToggle.textContent=T('edit.toggle');
+  });
+
+  applyLang(currentLang);
+})();
+</script>
+
+</body>
+</html>
